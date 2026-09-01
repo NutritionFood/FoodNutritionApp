@@ -17,7 +17,6 @@ document.addEventListener(
 
 function initializeSearch() {
 
-
     // =========================================================
     // ELEMENTOS DEL DOM
     // =========================================================
@@ -25,26 +24,20 @@ function initializeSearch() {
     const barcodeForm =
         document.querySelector("#barcode-form");
 
-
     const filtersForm =
         document.querySelector("#filters-form");
-
 
     const resultsContainer =
         document.querySelector("#results-container");
 
-
     const resultsCount =
         document.querySelector("#results-count");
-
 
     const searchStatus =
         document.querySelector("#search-status");
 
-
     const pagination =
         document.querySelector("#pagination");
-
 
     const resultsSection =
         document.querySelector("#results-section");
@@ -61,7 +54,6 @@ function initializeSearch() {
         );
 
         return;
-
     }
 
 
@@ -72,7 +64,6 @@ function initializeSearch() {
         );
 
         return;
-
     }
 
 
@@ -83,7 +74,6 @@ function initializeSearch() {
         );
 
         return;
-
     }
 
 
@@ -94,7 +84,6 @@ function initializeSearch() {
         );
 
         return;
-
     }
 
 
@@ -105,7 +94,6 @@ function initializeSearch() {
         );
 
         return;
-
     }
 
 
@@ -116,7 +104,6 @@ function initializeSearch() {
         );
 
         return;
-
     }
 
 
@@ -127,7 +114,6 @@ function initializeSearch() {
         );
 
         return;
-
     }
 
 
@@ -163,15 +149,12 @@ function initializeSearch() {
 
 
     // =========================================================
-    // BARCODE
+    // BÚSQUEDA POR CÓDIGO DE BARRAS
     // =========================================================
 
     barcodeForm.addEventListener(
-
         "submit",
-
-        async event => {
-
+        event => {
 
             event.preventDefault();
 
@@ -188,7 +171,6 @@ function initializeSearch() {
                 );
 
                 return;
-
             }
 
 
@@ -209,8 +191,9 @@ function initializeSearch() {
                     "error"
                 );
 
-                return;
+                barcodeInput.focus();
 
+                return;
             }
 
 
@@ -221,70 +204,30 @@ function initializeSearch() {
                     "error"
                 );
 
+                barcodeInput.focus();
+
                 return;
-
             }
 
 
-            try {
+            // -------------------------------------------------
+            // NAVEGACIÓN
+            // -------------------------------------------------
+            //
+            // La búsqueda real del producto pertenece al
+            // controller de la vista de detalle.
+            //
+            // De esta manera evitamos consultar dos veces
+            // Open Food Facts.
+            // -------------------------------------------------
 
-
-                clearStatus();
-
-                clearResults();
-
-                hidePagination();
-
-
-                searchComponent.renderLoading();
-
-
-                // -------------------------------------------------
-                // CONSULTAR PRODUCTO
-                // -------------------------------------------------
-
-                const product =
-
-                    await FoodNutritionService
-                        .getProductByBarcode(
-                            barcode
-                        );
-
-
-                // -------------------------------------------------
-                // NAVEGAR AL DETALLE
-                // -------------------------------------------------
-
-                window.location.href =
-
-                    `./foodNutrition.html?barcode=${encodeURIComponent(
-                        product.code
-                    )}`;
-
-
-            } catch (error) {
-
-
-                console.error(
-                    "Error al buscar producto:",
-                    error
-                );
-
-
-                searchComponent.renderError(
-                    error.message
-                );
-
-
-                showStatus(
-                    error.message,
-                    "error"
-                );
-
-            }
+            window.location.assign(
+                `./foodNutrition.html?barcode=${encodeURIComponent(
+                    barcode
+                )}`
+            );
 
         }
-
     );
 
 
@@ -293,11 +236,8 @@ function initializeSearch() {
     // =========================================================
 
     filtersForm.addEventListener(
-
         "submit",
-
         async event => {
-
 
             event.preventDefault();
 
@@ -309,10 +249,8 @@ function initializeSearch() {
             const categoryInput =
                 document.querySelector("#category");
 
-
             const brandInput =
                 document.querySelector("#brand");
-
 
             const nutritionGradeInput =
                 document.querySelector("#nutrition-grade");
@@ -330,7 +268,6 @@ function initializeSearch() {
                 );
 
                 return;
-
             }
 
 
@@ -339,17 +276,15 @@ function initializeSearch() {
             // -------------------------------------------------
 
             const category =
-                categoryInput.value;
-
+                categoryInput.value.trim();
 
             const brand =
                 brandInput
                     .value
                     .trim();
 
-
             const nutritionGrade =
-                nutritionGradeInput.value;
+                nutritionGradeInput.value.trim();
 
 
             // -------------------------------------------------
@@ -357,23 +292,17 @@ function initializeSearch() {
             // -------------------------------------------------
 
             if (
-
                 !category &&
                 !brand &&
                 !nutritionGrade
-
             ) {
 
                 showStatus(
-
                     "Seleccioná al menos un filtro.",
-
                     "error"
-
                 );
 
                 return;
-
             }
 
 
@@ -384,18 +313,14 @@ function initializeSearch() {
             state.category =
                 category;
 
-
             state.brand =
                 brand;
-
 
             state.nutritionGrade =
                 nutritionGrade;
 
-
             state.page =
                 1;
-
 
             state.total =
                 0;
@@ -408,7 +333,6 @@ function initializeSearch() {
             await executeSearch();
 
         }
-
     );
 
 
@@ -418,9 +342,7 @@ function initializeSearch() {
 
     async function executeSearch() {
 
-
         try {
-
 
             clearStatus();
 
@@ -437,20 +359,13 @@ function initializeSearch() {
             // -------------------------------------------------
 
             const data =
-
                 await FoodNutritionService
                     .searchProducts(
-
                         state.category,
-
                         state.brand,
-
                         state.nutritionGrade,
-
                         state.page,
-
                         state.pageSize
-
                     );
 
 
@@ -459,7 +374,9 @@ function initializeSearch() {
             // -------------------------------------------------
 
             const products =
-                data?.products ?? [];
+                Array.isArray(data?.products)
+                    ? data.products
+                    : [];
 
 
             // -------------------------------------------------
@@ -467,7 +384,9 @@ function initializeSearch() {
             // -------------------------------------------------
 
             state.total =
-                data?.count ?? 0;
+                Number.isInteger(data?.count)
+                    ? data.count
+                    : 0;
 
 
             // -------------------------------------------------
@@ -492,14 +411,11 @@ function initializeSearch() {
             // -------------------------------------------------
 
             resultsSection.scrollIntoView({
-
-                behavior: "smooth"
-
+                behavior: "smooth",
+                block: "start"
             });
 
-
         } catch (error) {
-
 
             console.error(
                 "Error durante la búsqueda:",
@@ -507,13 +423,19 @@ function initializeSearch() {
             );
 
 
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "Ocurrió un error inesperado durante la búsqueda.";
+
+
             searchComponent.renderError(
-                error.message
+                message
             );
 
 
             showStatus(
-                error.message,
+                message,
                 "error"
             );
 
@@ -528,78 +450,57 @@ function initializeSearch() {
 
     function renderPagination() {
 
-
         if (
-
             state.total <=
             state.pageSize
-
         ) {
 
             hidePagination();
 
             return;
-
         }
 
 
         const totalPages =
-
             Math.ceil(
-
                 state.total /
                 state.pageSize
-
             );
 
 
         pagination.innerHTML = `
 
             <button
-
                 id="previous-page"
-
                 type="button"
-
                 ${
                     state.page <= 1
                         ? "disabled"
                         : ""
                 }
-
             >
-
                 ← Anterior
-
             </button>
 
 
             <span>
-
                 Página
                 ${state.page}
                 de
                 ${totalPages}
-
             </span>
 
 
             <button
-
                 id="next-page"
-
                 type="button"
-
                 ${
                     state.page >= totalPages
                         ? "disabled"
                         : ""
                 }
-
             >
-
                 Siguiente →
-
             </button>
 
         `;
@@ -616,30 +517,22 @@ function initializeSearch() {
 
 
         previousButton?.addEventListener(
-
             "click",
-
             async () => {
 
-
                 if (
-
                     state.page <= 1
-
                 ) {
 
                     return;
-
                 }
 
 
                 state.page--;
 
-
                 await executeSearch();
 
             }
-
         );
 
 
@@ -654,30 +547,22 @@ function initializeSearch() {
 
 
         nextButton?.addEventListener(
-
             "click",
-
             async () => {
 
-
                 if (
-
                     state.page >= totalPages
-
                 ) {
 
                     return;
-
                 }
 
 
                 state.page++;
 
-
                 await executeSearch();
 
             }
-
         );
 
     }
@@ -689,19 +574,16 @@ function initializeSearch() {
 
     function renderResultsCount(total) {
 
-
         if (total === 0) {
 
             resultsCount.textContent =
                 "No se encontraron productos.";
 
             return;
-
         }
 
 
         resultsCount.textContent =
-
             `${total.toLocaleString("es-AR")} productos encontrados`;
 
     }
@@ -712,17 +594,13 @@ function initializeSearch() {
     // =========================================================
 
     function showStatus(
-
         message,
-
         type
-
     ) {
-
 
         searchStatus.innerHTML = `
 
-            <div class="status-${type}">
+            <div class="status-${escapeHtml(type)}">
 
                 ${escapeHtml(message)}
 

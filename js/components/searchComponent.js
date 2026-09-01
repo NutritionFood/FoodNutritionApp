@@ -2,16 +2,32 @@ export class SearchComponent {
 
     constructor(container) {
 
-        this.container = container;
+        this.container =
+            container;
+
     }
 
 
-    renderResults(products = []) {
+    // =========================================================
+    // RESULTADOS
+    // =========================================================
 
-        if (products.length === 0) {
+    renderResults(
+        products = []
+    ) {
+
+        if (
+            !Array.isArray(products) ||
+            products.length === 0
+        ) {
 
             this.container.innerHTML = `
-                <div class="search-empty">
+
+                <div
+                    class="search-empty"
+                    role="status"
+                    aria-live="polite"
+                >
 
                     <h3>
                         No se encontraron productos
@@ -22,6 +38,7 @@ export class SearchComponent {
                     </p>
 
                 </div>
+
             `;
 
             return;
@@ -30,99 +47,131 @@ export class SearchComponent {
 
         this.container.innerHTML =
             products
-                .map(product =>
-                    this.renderProduct(product)
+                .map(
+                    product =>
+                        this.renderProduct(
+                            product
+                        )
                 )
                 .join("");
+
     }
 
 
-    renderProduct(product) {
+    // =========================================================
+    // PRODUCTO
+    // =========================================================
+
+    renderProduct(
+        product
+    ) {
 
         const name =
-            product.product_name_es ||
-            product.product_name ||
+            product?.product_name_es ||
+            product?.product_name ||
             "Producto sin nombre";
 
 
         const brand =
-            product.brands ||
+            product?.brands ||
             "Marca no disponible";
 
 
         const barcode =
-            product.code ||
+            product?.code ||
             "";
 
 
         const image =
-            product.image_front_url ||
+            product?.image_front_url ||
             null;
 
 
         const calories =
-            product.nutriments?.[
+            product?.nutriments?.[
                 "energy-kcal_100g"
             ];
 
 
         const proteins =
-            product.nutriments?.[
+            product?.nutriments?.[
                 "proteins_100g"
             ];
 
 
         const sugars =
-            product.nutriments?.[
+            product?.nutriments?.[
                 "sugars_100g"
             ];
 
 
         const nutritionGrade =
-            product.nutriscore_grade ||
-            product.nutrition_grades ||
+            product?.nutriscore_grade ||
+            product?.nutrition_grades ||
             null;
 
 
         return `
-            <article class="product-card">
 
-                <div class="product-image">
+            <article
+                class="product-card"
+            >
+
+                <div
+                    class="product-image"
+                >
 
                     ${
                         image
 
                             ? `
+
                                 <img
                                     src="${this.escapeHtml(image)}"
                                     alt="${this.escapeHtml(name)}"
                                     loading="lazy"
+                                    decoding="async"
                                 >
+
                             `
 
                             : `
-                                <div class="no-image">
+
+                                <div
+                                    class="no-image"
+                                    role="img"
+                                    aria-label="Imagen no disponible"
+                                >
                                     Imagen no disponible
                                 </div>
+
                             `
                     }
 
                 </div>
 
 
-                <div class="product-info">
+                <div
+                    class="product-info"
+                >
 
-                    <span class="product-brand">
+                    <span
+                        class="product-brand"
+                    >
                         ${this.escapeHtml(brand)}
                     </span>
 
 
-                    <h3 class="product-name">
+                    <h3
+                        class="product-name"
+                    >
                         ${this.escapeHtml(name)}
                     </h3>
 
 
-                    <div class="product-nutrition">
+                    <div
+                        class="product-nutrition"
+                    >
 
                         ${this.renderNutrient(
                             calories,
@@ -149,25 +198,38 @@ export class SearchComponent {
                         nutritionGrade
 
                             ? `
+
                                 <span
                                     class="
                                         nutrition-grade
                                         nutrition-grade-${this.escapeHtml(
-                                            nutritionGrade.toLowerCase()
+                                            String(
+                                                nutritionGrade
+                                            ).toLowerCase()
                                         )}
                                     "
                                 >
+
                                     Nutri-Score:
+
                                     ${this.escapeHtml(
-                                        nutritionGrade.toUpperCase()
+                                        String(
+                                            nutritionGrade
+                                        ).toUpperCase()
                                     )}
+
                                 </span>
+
                             `
 
                             : `
-                                <span class="nutrition-unavailable">
+
+                                <span
+                                    class="nutrition-unavailable"
+                                >
                                     Nutri-Score no disponible
                                 </span>
+
                             `
                     }
 
@@ -176,25 +238,41 @@ export class SearchComponent {
                         barcode
 
                             ? `
+
                                 <a
                                     class="detail-button"
-                                    href="./foodNutrition.html?barcode=${encodeURIComponent(barcode)}"
+                                    href="./foodNutrition.html?barcode=${encodeURIComponent(
+                                        barcode
+                                    )}"
+                                    aria-label="Ver detalle de ${this.escapeHtml(name)}"
                                 >
                                     Ver detalle
                                 </a>
+
                             `
 
                             : ""
+
                     }
 
                 </div>
 
             </article>
+
         `;
+
     }
 
 
-    renderNutrient(value, unit, label) {
+    // =========================================================
+    // NUTRIENTE
+    // =========================================================
+
+    renderNutrient(
+        value,
+        unit,
+        label
+    ) {
 
         if (
             value === undefined ||
@@ -203,70 +281,128 @@ export class SearchComponent {
         ) {
 
             return `
+
                 <span>
-                    ${label}: no disponible
+                    ${this.escapeHtml(label)}:
+                    no disponible
                 </span>
+
             `;
+
         }
 
 
         return `
+
             <span>
-                ${label}:
+
+                ${this.escapeHtml(label)}:
+
                 <strong>
                     ${this.formatNumber(value)}
-                    ${unit}
+                    ${this.escapeHtml(unit)}
                 </strong>
+
             </span>
+
         `;
+
     }
 
 
     // =========================================================
-    // ESTE MÉTODO ES EL QUE ESTÁ FALTANDO
+    // ERROR
     // =========================================================
 
-    renderError(message) {
+    renderError(
+        message
+    ) {
 
         this.container.innerHTML = `
-            <div class="search-error">
+
+            <div
+                class="search-error"
+                role="alert"
+            >
 
                 <h3>
                     No fue posible realizar la búsqueda
                 </h3>
 
                 <p>
-                    ${this.escapeHtml(message)}
+                    ${this.escapeHtml(
+                        message
+                    )}
                 </p>
 
             </div>
+
         `;
+
     }
 
+
+    // =========================================================
+    // LOADING
+    // =========================================================
 
     renderLoading() {
 
         this.container.innerHTML = `
-            <div class="search-loading">
 
-                <p>
+            <div
+                class="search-loading"
+                role="status"
+                aria-live="polite"
+                aria-busy="true"
+            >
+
+                <div
+                    class="loading-spinner"
+                    aria-hidden="true"
+                ></div>
+
+
+                <p
+                    class="loading-title"
+                >
                     Buscando productos...
                 </p>
 
+
+                <p
+                    class="loading-description"
+                >
+                    Consultando Open Food Facts.
+                </p>
+
             </div>
+
         `;
+
     }
 
 
-    formatNumber(value) {
+    // =========================================================
+    // FORMATEAR NÚMERO
+    // =========================================================
+
+    formatNumber(
+        value
+    ) {
 
         const number =
             Number(value);
 
 
-        if (Number.isNaN(number)) {
+        if (
+            Number.isNaN(number)
+        ) {
 
-            return value;
+            return this.escapeHtml(
+                value
+            );
+
         }
 
 
@@ -276,16 +412,45 @@ export class SearchComponent {
                 maximumFractionDigits: 2
             }
         );
+
     }
 
 
-    escapeHtml(value) {
+    // =========================================================
+    // ESCAPAR HTML
+    // =========================================================
+
+    escapeHtml(
+        value
+    ) {
 
         return String(value)
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
+
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
     }
+
 }
