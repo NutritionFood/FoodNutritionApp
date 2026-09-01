@@ -617,7 +617,66 @@ main {
         height: 120px;
     }
 }
+/* =========================================================
+   NAVEGACIÓN
+   ========================================================= */
 
+.food-navigation {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+
+.food-back-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 10px 16px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    background-color: #ffffff;
+
+    color: #333;
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.food-back-button:hover {
+    background-color: #f5f6f7;
+
+    border-color: #ccc;
+
+    transform: translateX(-2px);
+}
+
+
+.food-back-button:active {
+    transform: translateX(0);
+}
+
+
+.food-back-button:focus-visible {
+    outline: 2px solid #333;
+
+    outline-offset: 2px;
+}
 
 /* =========================================================
    DESKTOP
