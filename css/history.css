@@ -1,0 +1,192 @@
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+.history-section {
+    margin-top: 25px;
+}
+
+.history-section-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+}
+
+.clear-history-button {
+
+    padding: 10px 16px;
+
+    border: 1px solid #f0b4b4;
+
+    border-radius: 8px;
+
+    background-color: #ffffff;
+
+    color: #c62828;
+
+    font-size: 0.85rem;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+}
+
+.clear-history-button:hover {
+    background-color: #ffe5e5;
+}
+
+
+/* =========================================================
+   LIST
+   ========================================================= */
+
+.history-list {
+
+    list-style: none;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin-top: 20px;
+}
+
+.history-item {
+
+    background-color: #ffffff;
+
+    border-radius: 12px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+
+    overflow: hidden;
+}
+
+.history-item-link {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 12px;
+
+    text-decoration: none;
+
+    color: inherit;
+}
+
+.history-item-image {
+
+    width: 64px;
+    height: 64px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background-color: #f5f6f7;
+
+    border-radius: 8px;
+
+    overflow: hidden;
+}
+
+.history-item-image img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+.history-item-image .no-image {
+
+    width: 100%;
+    height: 100%;
+
+    font-size: 0.6rem;
+
+    text-align: center;
+}
+
+.history-item-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    min-width: 0;
+
+    flex: 1;
+}
+
+.history-item-name {
+
+    font-size: 0.95rem;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.history-item-date {
+
+    color: #999;
+
+    font-size: 0.75rem;
+}
+
+.history-item-link .nutrition-grade {
+
+    margin-bottom: 0;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.history-empty {
+
+    padding: 40px 20px;
+
+    background-color: #ffffff;
+
+    border-radius: 10px;
+
+    text-align: center;
+
+    color: #666;
+}
+
+.history-empty h3 {
+    margin-bottom: 8px;
+
+    color: #333;
+}
+
+.history-empty p {
+    margin-bottom: 18px;
+}

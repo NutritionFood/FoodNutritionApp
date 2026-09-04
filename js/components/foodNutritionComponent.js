@@ -2,14 +2,22 @@ export class FoodNutritionComponent {
 
     constructor(container) {
         this.container = container;
+        this.currentProduct = null;
     }
 
 
     // =========================================================
     // RENDER PRINCIPAL
     // =========================================================
+    //
+    // options.isInWishlist: indica si el producto ya fue
+    // agregado previamente a la lista de deseos (lo determina
+    // el controller consultando el StorageService).
+    // =========================================================
 
-    render(product) {
+    render(product, options = {}) {
+
+        this.currentProduct = product;
 
         if (!product) {
 
@@ -55,6 +63,11 @@ export class FoodNutritionComponent {
 
 
                 ${this.renderHeader(product)}
+
+                ${this.renderWishlistSection(
+                    product,
+                    options
+                )}
 
                 ${this.renderNutrition(product)}
 
@@ -188,6 +201,183 @@ export class FoodNutritionComponent {
             ${this.renderNutriScore(product)}
 
         `;
+    }
+
+
+    // =========================================================
+    // LISTA DE DESEOS
+    // =========================================================
+
+    renderWishlistSection(product, options = {}) {
+
+        const isInWishlist =
+            Boolean(options.isInWishlist);
+
+
+        if (isInWishlist) {
+
+            return `
+
+                <section class="food-wishlist">
+
+                    <div
+                        class="wishlist-confirmation"
+                        role="status"
+                    >
+                        ✓ Este producto ya está en tu
+                        lista de deseos.
+
+                        <a href="/html/wishlist.html">
+                            Ver lista de deseos
+                        </a>
+                    </div>
+
+                </section>
+
+            `;
+
+        }
+
+
+        return `
+
+            <section class="food-wishlist">
+
+                <button
+                    type="button"
+                    class="wishlist-toggle-button"
+                    id="wishlist-toggle-button"
+                    aria-expanded="false"
+                    aria-controls="wishlist-form-section"
+                >
+                    🤍 Agregar a lista de deseos
+                </button>
+
+
+                <div
+                    class="wishlist-form-section"
+                    id="wishlist-form-section"
+                    hidden
+                >
+
+                    <h2>
+                        Agregar a lista de deseos
+                    </h2>
+
+                    <p class="wishlist-form-intro">
+                        Personalizá esta entrada con tus
+                        propias preferencias.
+                    </p>
+
+
+                    <form
+                        id="wishlist-form"
+                        novalidate
+                    >
+
+                        <div class="form-group">
+
+                            <label for="wishlist-priority">
+                                Prioridad
+                                (número mayor a 0)
+                            </label>
+
+                            <input
+                                type="number"
+                                id="wishlist-priority"
+                                name="priority"
+                                min="1"
+                                step="1"
+                                placeholder="Ej: 1"
+                            >
+
+                            <span
+                                class="field-error"
+                                id="error-priority"
+                            ></span>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="wishlist-category">
+                                Categoría o etiqueta
+                                personalizada
+                            </label>
+
+                            <input
+                                type="text"
+                                id="wishlist-category"
+                                name="category"
+                                maxlength="40"
+                                placeholder="Ej: Desayuno saludable"
+                            >
+
+                            <span
+                                class="field-error"
+                                id="error-category"
+                            ></span>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="wishlist-note">
+                                Nota personal (opcional)
+                            </label>
+
+                            <textarea
+                                id="wishlist-note"
+                                name="note"
+                                rows="3"
+                                maxlength="200"
+                                placeholder="Ej: Comprar la próxima vez que vaya al súper"
+                            ></textarea>
+
+                            <span
+                                class="field-error"
+                                id="error-note"
+                            ></span>
+
+                        </div>
+
+
+                        <div
+                            class="wishlist-form-status"
+                            id="wishlist-form-status"
+                            role="alert"
+                        ></div>
+
+
+                        <div class="wishlist-form-actions">
+
+                            <button
+                                type="submit"
+                                class="primary-button"
+                            >
+                                Guardar en lista de deseos
+                            </button>
+
+                            <button
+                                type="button"
+                                class="secondary-button"
+                                id="wishlist-cancel-button"
+                            >
+                                Cancelar
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+        `;
+
     }
 
 
@@ -692,6 +882,145 @@ export class FoodNutritionComponent {
 
 
         // -----------------------------------------------------
+        // LISTA DE DESEOS - TOGGLE
+        // -----------------------------------------------------
+
+        const wishlistToggleButton =
+            this.container.querySelector(
+                "#wishlist-toggle-button"
+            );
+
+        const wishlistFormSection =
+            this.container.querySelector(
+                "#wishlist-form-section"
+            );
+
+
+        if (wishlistToggleButton && wishlistFormSection) {
+
+            wishlistToggleButton.addEventListener(
+                "click",
+                () => {
+
+                    const isHidden =
+                        wishlistFormSection.hasAttribute(
+                            "hidden"
+                        );
+
+
+                    if (isHidden) {
+
+                        wishlistFormSection.removeAttribute(
+                            "hidden"
+                        );
+
+                        wishlistToggleButton.setAttribute(
+                            "aria-expanded",
+                            "true"
+                        );
+
+                    } else {
+
+                        wishlistFormSection.setAttribute(
+                            "hidden",
+                            ""
+                        );
+
+                        wishlistToggleButton.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        // -----------------------------------------------------
+        // LISTA DE DESEOS - CANCELAR
+        // -----------------------------------------------------
+
+        const wishlistCancelButton =
+            this.container.querySelector(
+                "#wishlist-cancel-button"
+            );
+
+
+        wishlistCancelButton?.addEventListener(
+            "click",
+            () => {
+
+                wishlistFormSection?.setAttribute(
+                    "hidden",
+                    ""
+                );
+
+                wishlistToggleButton?.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+            }
+        );
+
+
+        // -----------------------------------------------------
+        // LISTA DE DESEOS - SUBMIT
+        // -----------------------------------------------------
+        //
+        // El componente NO valida ni guarda: sólo captura los
+        // valores crudos y emite un evento. La validación y
+        // la persistencia son responsabilidad del controller.
+        // -----------------------------------------------------
+
+        const wishlistForm =
+            this.container.querySelector(
+                "#wishlist-form"
+            );
+
+
+        wishlistForm?.addEventListener(
+            "submit",
+            event => {
+
+                event.preventDefault();
+
+
+                const formData =
+                    new FormData(wishlistForm);
+
+
+                this.container.dispatchEvent(
+                    new CustomEvent(
+                        "wishlist:submit",
+                        {
+                            bubbles: true,
+
+                            detail: {
+
+                                priority:
+                                    formData.get("priority"),
+
+                                category:
+                                    formData.get("category"),
+
+                                note:
+                                    formData.get("note")
+
+                            }
+
+                        }
+                    )
+                );
+
+            }
+        );
+
+
+        // -----------------------------------------------------
         // GALERÍA
         // -----------------------------------------------------
 
@@ -731,6 +1060,116 @@ export class FoodNutritionComponent {
             );
 
         });
+
+    }
+
+
+    // =========================================================
+    // PRODUCTO ACTUAL (accessor de sólo lectura)
+    // =========================================================
+
+    getCurrentProduct() {
+
+        return this.currentProduct;
+
+    }
+
+
+    // =========================================================
+    // LISTA DE DESEOS - FEEDBACK (llamado desde el controller)
+    // =========================================================
+
+    showWishlistFieldErrors(errors = {}) {
+
+        this.clearWishlistFieldErrors();
+
+
+        Object.entries(errors).forEach(
+            ([field, message]) => {
+
+                const errorElement =
+                    this.container.querySelector(
+                        `#error-${field}`
+                    );
+
+
+                if (errorElement) {
+
+                    errorElement.textContent =
+                        message;
+
+                }
+
+            }
+        );
+
+    }
+
+
+    clearWishlistFieldErrors() {
+
+        this.container
+            .querySelectorAll(".field-error")
+            .forEach(
+                element => {
+                    element.textContent = "";
+                }
+            );
+
+    }
+
+
+    showWishlistStatus(message, type = "error") {
+
+        const statusElement =
+            this.container.querySelector(
+                "#wishlist-form-status"
+            );
+
+
+        if (!statusElement) {
+            return;
+        }
+
+
+        statusElement.textContent =
+            message;
+
+        statusElement.className =
+            `wishlist-form-status wishlist-form-status-${type}`;
+
+    }
+
+
+    showWishlistSuccess() {
+
+        if (!this.currentProduct) {
+            return;
+        }
+
+
+        // Vuelve a renderizar toda la sección con
+        // isInWishlist = true, mostrando la confirmación.
+
+        const wishlistSectionHtml =
+            this.renderWishlistSection(
+                this.currentProduct,
+                { isInWishlist: true }
+            );
+
+
+        const existingSection =
+            this.container.querySelector(
+                ".food-wishlist"
+            );
+
+
+        if (existingSection) {
+
+            existingSection.outerHTML =
+                wishlistSectionHtml;
+
+        }
 
     }
 

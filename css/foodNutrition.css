@@ -278,6 +278,205 @@ main {
 
 
 /* =========================================================
+   LISTA DE DESEOS
+   ========================================================= */
+
+.food-wishlist {
+
+    margin-top: 25px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #e5e5e5;
+}
+
+.wishlist-toggle-button {
+
+    width: 100%;
+
+    min-height: 46px;
+
+    padding: 10px 16px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    background-color: #ffffff;
+
+    color: #333;
+
+    font-size: 0.95rem;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.wishlist-toggle-button:hover {
+    background-color: #f5f6f7;
+}
+
+.wishlist-confirmation {
+
+    padding: 14px;
+
+    border-radius: 8px;
+
+    background-color: #eaf7ee;
+
+    color: #1b8f3a;
+
+    font-size: 0.9rem;
+}
+
+.wishlist-confirmation a {
+    color: #1b8f3a;
+    font-weight: bold;
+}
+
+.wishlist-form-section {
+
+    margin-top: 15px;
+
+    padding: 18px;
+
+    border-radius: 10px;
+
+    background-color: #f5f6f7;
+}
+
+.wishlist-form-section h2 {
+    font-size: 1rem;
+
+    margin-bottom: 6px;
+}
+
+.wishlist-form-intro {
+    color: #666;
+
+    font-size: 0.85rem;
+
+    margin-bottom: 15px;
+}
+
+.wishlist-form-section .form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    margin-bottom: 14px;
+}
+
+.wishlist-form-section label {
+    font-weight: bold;
+
+    font-size: 0.85rem;
+}
+
+.wishlist-form-section input,
+.wishlist-form-section textarea {
+
+    width: 100%;
+
+    padding: 10px 12px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 8px;
+
+    background-color: #ffffff;
+
+    color: #222;
+
+    font-size: 0.95rem;
+
+    font-family: inherit;
+}
+
+.wishlist-form-section textarea {
+    resize: vertical;
+}
+
+.field-error {
+
+    display: block;
+
+    min-height: 1em;
+
+    color: #c62828;
+
+    font-size: 0.78rem;
+}
+
+.wishlist-form-status {
+    font-size: 0.85rem;
+
+    margin-bottom: 10px;
+}
+
+.wishlist-form-status:empty {
+    display: none;
+}
+
+.wishlist-form-status-error {
+    color: #c62828;
+}
+
+.wishlist-form-status-success {
+    color: #1b8f3a;
+}
+
+.wishlist-form-actions {
+
+    display: flex;
+
+    gap: 10px;
+}
+
+.wishlist-form-actions .primary-button {
+
+    flex: 1;
+
+    min-height: 46px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background-color: #222;
+
+    color: #ffffff;
+
+    font-size: 0.9rem;
+
+    cursor: pointer;
+}
+
+.wishlist-form-actions .secondary-button {
+
+    min-height: 46px;
+
+    padding: 0 16px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 8px;
+
+    background-color: #ffffff;
+
+    color: #333;
+
+    font-size: 0.9rem;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
    SECTIONS
    ========================================================= */
 
