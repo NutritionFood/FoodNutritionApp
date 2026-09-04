@@ -1,67 +1,141 @@
-import { FoodNutritionService }from "../services/foodNutritionService.js";
+import { FoodNutritionService }
+    from "../services/foodNutritionService.js";
 
-import { SearchComponent }from "../components/searchComponent.js";
+import { SearchComponent }
+    from "../components/searchComponent.js";
+
+import { initNav }
+    from "../components/navComponent.js";
+
 
 // =========================================================
 // INICIALIZACIÓN
 // =========================================================
 
-document.addEventListener("DOMContentLoaded",initializeSearch);
+document.addEventListener(
+    "DOMContentLoaded",
+    initializeSearch
+);
+
 
 function initializeSearch() {
+
+    // =========================================================
+    // NAVEGACIÓN
+    // =========================================================
+
+    initNav("search");
+
 
     // =========================================================
     // ELEMENTOS DEL DOM
     // =========================================================
 
-    const barcodeForm = document.querySelector("#barcode-form");
+    const barcodeForm =
+        document.querySelector("#barcode-form");
 
-    const filtersForm = document.querySelector("#filters-form");
+    const filtersForm =
+        document.querySelector("#filters-form");
 
-    const barcodeInput = document.querySelector("#barcode");
+    const resultsContainer =
+        document.querySelector("#results-container");
 
-    const categoryInput = document.querySelector("#category");
+    const resultsCount =
+        document.querySelector("#results-count");
 
-    const brandInput = document.querySelector("#brand");
+    const searchStatus =
+        document.querySelector("#search-status");
 
-    const nutritionGradeInput = document.querySelector("#nutrition-grade");
+    const pagination =
+        document.querySelector("#pagination");
 
-    const resultsContainer = document.querySelector("#results-container");
+    const resultsSection =
+        document.querySelector("#results-section");
 
-    const resultsCount = document.querySelector("#results-count");
-
-    const searchStatus = document.querySelector("#search-status");
-
-    const pagination = document.querySelector("#pagination");
-
-    const resultsSection = document.querySelector("#results-section");
 
     // =========================================================
     // VALIDACIÓN DE ELEMENTOS
     // =========================================================
 
-    if (
-    !barcodeForm ||
-    !barcodeInput ||
-    !filtersForm ||
-    !categoryInput ||
-    !brandInput ||
-    !nutritionGradeInput ||
-    !resultsContainer ||
-    !resultsCount ||
-    !searchStatus ||
-    !pagination ||
-    !resultsSection
-    ) {
-        console.error("No se pudieron obtener todos los elementos necesarios.");
+    if (!barcodeForm) {
+
+        console.error(
+            "No se encontró el formulario #barcode-form."
+        );
+
         return;
     }
+
+
+    if (!filtersForm) {
+
+        console.error(
+            "No se encontró el formulario #filters-form."
+        );
+
+        return;
+    }
+
+
+    if (!resultsContainer) {
+
+        console.error(
+            "No se encontró #results-container."
+        );
+
+        return;
+    }
+
+
+    if (!resultsCount) {
+
+        console.error(
+            "No se encontró #results-count."
+        );
+
+        return;
+    }
+
+
+    if (!searchStatus) {
+
+        console.error(
+            "No se encontró #search-status."
+        );
+
+        return;
+    }
+
+
+    if (!pagination) {
+
+        console.error(
+            "No se encontró #pagination."
+        );
+
+        return;
+    }
+
+
+    if (!resultsSection) {
+
+        console.error(
+            "No se encontró #results-section."
+        );
+
+        return;
+    }
+
 
     // =========================================================
     // COMPONENT
     // =========================================================
 
-    const searchComponent = new SearchComponent(resultsContainer);
+    const searchComponent =
+        new SearchComponent(
+            resultsContainer
+        );
+
 
     // =========================================================
     // ESTADO DE LA BÚSQUEDA
@@ -83,15 +157,38 @@ function initializeSearch() {
 
     };
 
+
     // =========================================================
     // BÚSQUEDA POR CÓDIGO DE BARRAS
     // =========================================================
 
-    barcodeForm.addEventListener("submit",event => {
+    barcodeForm.addEventListener(
+        "submit",
+        event => {
 
             event.preventDefault();
 
-            const barcode = barcodeInput.value.trim();
+
+            const barcodeInput =
+                document.querySelector("#barcode");
+
+
+            if (!barcodeInput) {
+
+                showStatus(
+                    "No se encontró el campo de código de barras.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            const barcode =
+                barcodeInput
+                    .value
+                    .trim();
+
 
             // -------------------------------------------------
             // VALIDACIÓN
@@ -99,71 +196,155 @@ function initializeSearch() {
 
             if (!barcode) {
 
-                showStatus("Ingresá un código de barras.", "error");
+                showStatus(
+                    "Ingresá un código de barras.",
+                    "error"
+                );
 
                 barcodeInput.focus();
 
                 return;
             }
+
 
             if (!/^\d{8,14}$/.test(barcode)) {
 
-                showStatus("El código de barras debe contener entre 8 y 14 números.", "error");
+                showStatus(
+                    "El código de barras debe contener entre 8 y 14 números.",
+                    "error"
+                );
 
                 barcodeInput.focus();
 
                 return;
             }
 
-            window.location.assign(`./foodNutrition.html?barcode=${encodeURIComponent(barcode)}`);
+
+            // -------------------------------------------------
+            // NAVEGACIÓN
+            // -------------------------------------------------
+            //
+            // La búsqueda real del producto pertenece al
+            // controller de la vista de detalle.
+            //
+            // De esta manera evitamos consultar dos veces
+            // Open Food Facts.
+            // -------------------------------------------------
+
+            window.location.assign(
+                `./foodNutrition.html?barcode=${encodeURIComponent(
+                    barcode
+                )}`
+            );
+
         }
     );
+
 
     // =========================================================
     // BÚSQUEDA CON FILTROS
     // =========================================================
 
-    filtersForm.addEventListener("submit", async event => {
+    filtersForm.addEventListener(
+        "submit",
+        async event => {
 
             event.preventDefault();
+
 
             // -------------------------------------------------
             // OBTENER ELEMENTOS
             // -------------------------------------------------
 
-            const category = categoryInput.value.trim();
-            const brand = brandInput.value.trim();
-            const nutritionGrade = nutritionGradeInput.value.trim();
+            const categoryInput =
+                document.querySelector("#category");
+
+            const brandInput =
+                document.querySelector("#brand");
+
+            const nutritionGradeInput =
+                document.querySelector("#nutrition-grade");
+
+
+            if (
+                !categoryInput ||
+                !brandInput ||
+                !nutritionGradeInput
+            ) {
+
+                showStatus(
+                    "No se pudieron obtener todos los filtros.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            // -------------------------------------------------
+            // OBTENER VALORES
+            // -------------------------------------------------
+
+            const category =
+                categoryInput.value.trim();
+
+            const brand =
+                brandInput
+                    .value
+                    .trim();
+
+            const nutritionGrade =
+                nutritionGradeInput.value.trim();
+
 
             // -------------------------------------------------
             // VALIDACIÓN
             // -------------------------------------------------
 
-            if (!category && !brand && !nutritionGrade
+            if (
+                !category &&
+                !brand &&
+                !nutritionGrade
             ) {
 
-                showStatus("Seleccioná al menos un filtro.", "error");
+                showStatus(
+                    "Seleccioná al menos un filtro.",
+                    "error"
+                );
 
                 return;
             }
+
 
             // -------------------------------------------------
             // GUARDAR ESTADO
             // -------------------------------------------------
 
-            state.category = category;
-            state.brand = brand;
-            state.nutritionGrade = nutritionGrade;
-            state.page = 1;
-            state.total = 0;
+            state.category =
+                category;
+
+            state.brand =
+                brand;
+
+            state.nutritionGrade =
+                nutritionGrade;
+
+            state.page =
+                1;
+
+            state.total =
+                0;
+
 
             // -------------------------------------------------
             // EJECUTAR BÚSQUEDA
             // -------------------------------------------------
 
             await executeSearch();
+
         }
     );
+
 
     // =========================================================
     // EJECUTAR BÚSQUEDA
@@ -179,13 +360,17 @@ function initializeSearch() {
 
             hidePagination();
 
+
             searchComponent.renderLoading();
+
 
             // -------------------------------------------------
             // CONSULTAR API
             // -------------------------------------------------
 
-            const data = await FoodNutritionService.searchProducts(
+            const data =
+                await FoodNutritionService
+                    .searchProducts(
                         state.category,
                         state.brand,
                         state.nutritionGrade,
@@ -193,26 +378,43 @@ function initializeSearch() {
                         state.pageSize
                     );
 
+
             // -------------------------------------------------
             // PRODUCTOS
             // -------------------------------------------------
-            const products = Array.isArray(data?.products)? data.products: [];
+
+            const products =
+                Array.isArray(data?.products)
+                    ? data.products
+                    : [];
+
 
             // -------------------------------------------------
             // TOTAL
             // -------------------------------------------------
 
-            state.total = Number.isInteger(data?.count) ? data.count: 0;
+            state.total =
+                Number.isInteger(data?.count)
+                    ? data.count
+                    : 0;
+
 
             // -------------------------------------------------
             // RENDER RESULTADOS
             // -------------------------------------------------
 
-            searchComponent.renderResults(products);
+            searchComponent.renderResults(
+                products
+            );
 
-            renderResultsCount(state.total);
+
+            renderResultsCount(
+                state.total
+            );
+
 
             renderPagination();
+
 
             // -------------------------------------------------
             // SCROLL
@@ -225,15 +427,32 @@ function initializeSearch() {
 
         } catch (error) {
 
-            console.error("Error durante la búsqueda:",error);
+            console.error(
+                "Error durante la búsqueda:",
+                error
+            );
 
-            const message =  error instanceof Error? error.message: "Ocurrió un error inesperado durante la búsqueda.";
 
-            searchComponent.renderError(message);
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "Ocurrió un error inesperado durante la búsqueda.";
 
-            showStatus(message,"error");
+
+            searchComponent.renderError(
+                message
+            );
+
+
+            showStatus(
+                message,
+                "error"
+            );
+
         }
+
     }
+
 
     // =========================================================
     // PAGINACIÓN
@@ -241,14 +460,23 @@ function initializeSearch() {
 
     function renderPagination() {
 
-        if (state.total <=state.pageSize) {
+        if (
+            state.total <=
+            state.pageSize
+        ) {
 
             hidePagination();
 
             return;
         }
 
-        const totalPages = Math.ceil(state.total /state.pageSize);
+
+        const totalPages =
+            Math.ceil(
+                state.total /
+                state.pageSize
+            );
+
 
         pagination.innerHTML = `
 
@@ -264,12 +492,14 @@ function initializeSearch() {
                 ← Anterior
             </button>
 
+
             <span>
                 Página
                 ${state.page}
                 de
                 ${totalPages}
             </span>
+
 
             <button
                 id="next-page"
@@ -285,13 +515,20 @@ function initializeSearch() {
 
         `;
 
+
         // -----------------------------------------------------
         // ANTERIOR
         // -----------------------------------------------------
 
-        const previousButton =document.querySelector("#previous-page");
+        const previousButton =
+            document.querySelector(
+                "#previous-page"
+            );
 
-        previousButton?.addEventListener("click",async () => {
+
+        previousButton?.addEventListener(
+            "click",
+            async () => {
 
                 if (
                     state.page <= 1
@@ -300,11 +537,14 @@ function initializeSearch() {
                     return;
                 }
 
+
                 state.page--;
 
                 await executeSearch();
+
             }
         );
+
 
         // -----------------------------------------------------
         // SIGUIENTE
@@ -337,6 +577,7 @@ function initializeSearch() {
 
     }
 
+
     // =========================================================
     // CANTIDAD DE RESULTADOS
     // =========================================================
@@ -362,15 +603,21 @@ function initializeSearch() {
     // STATUS
     // =========================================================
 
-    function showStatus(message, type) {
-    searchStatus.innerHTML = "";
+    function showStatus(
+        message,
+        type
+    ) {
 
-    const statusElement = document.createElement("div");
+        searchStatus.innerHTML = `
 
-    statusElement.className = `status-${type}`;
-    statusElement.textContent = message;
+            <div class="status-${escapeHtml(type)}">
 
-    searchStatus.appendChild(statusElement);
+                ${escapeHtml(message)}
+
+            </div>
+
+        `;
+
     }
 
 
@@ -384,6 +631,7 @@ function initializeSearch() {
 
     }
 
+
     // =========================================================
     // LIMPIAR RESULTADOS
     // =========================================================
@@ -396,6 +644,7 @@ function initializeSearch() {
 
     }
 
+
     // =========================================================
     // OCULTAR PAGINACIÓN
     // =========================================================
@@ -405,4 +654,41 @@ function initializeSearch() {
         pagination.innerHTML = "";
 
     }
+
+
+    // =========================================================
+    // ESCAPAR HTML
+    // =========================================================
+
+    function escapeHtml(value) {
+
+        return String(value)
+
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+    }
+
 }
