@@ -1,8 +1,6 @@
 import { API } from "../config/urls.js";
 
-
 export class FoodNutritionService {
-
 
     // =========================================================
     // CONFIGURACIÓN DE REINTENTOS

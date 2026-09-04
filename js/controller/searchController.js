@@ -70,17 +70,11 @@ function initializeSearch() {
     const state = {
 
         category: "",
-
         brand: "",
-
         nutritionGrade: "",
-
         page: 1,
-
         pageSize: 10,
-
         total: 0
-
     };
 
     // =========================================================

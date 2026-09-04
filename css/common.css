@@ -1,0 +1,196 @@
+/* =========================================================
+   COMMON.CSS
+   =========================================================
+   Estilos compartidos por TODAS las vistas: navegación
+   principal y utilidades. Se incluye además de la hoja de
+   estilos propia de cada página.
+   ========================================================= */
+
+
+/* =========================================================
+   UTILIDADES
+   ========================================================= */
+
+.visually-hidden {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    padding: 0;
+    margin: -1px;
+
+    overflow: hidden;
+
+    clip: rect(0, 0, 0, 0);
+
+    white-space: nowrap;
+
+    border: 0;
+}
+
+
+/* =========================================================
+   HEADER TOP (contiene título + nav)
+   ========================================================= */
+
+.header-top {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.header-brand {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   NAV - TOGGLE (mobile)
+   ========================================================= */
+
+.nav-toggle {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    background-color: #ffffff;
+
+    cursor: pointer;
+}
+
+.nav-toggle-bar {
+    display: block;
+
+    width: 20px;
+    height: 2px;
+
+    background-color: #222;
+
+    border-radius: 2px;
+}
+
+.nav-toggle:focus-visible {
+    outline: 2px solid #333;
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   NAV - MENU (mobile: colapsado por defecto)
+   ========================================================= */
+
+.nav-menu {
+    list-style: none;
+
+    position: absolute;
+
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    z-index: 20;
+
+    display: none;
+
+    flex-direction: column;
+
+    background-color: #ffffff;
+
+    border-bottom: 1px solid #ddd;
+
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+.nav-menu.open {
+    display: flex;
+}
+
+.main-nav {
+    position: relative;
+}
+
+.nav-link {
+    display: block;
+
+    padding: 14px 20px;
+
+    color: #333;
+
+    text-decoration: none;
+
+    font-size: 0.95rem;
+
+    font-weight: 600;
+
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.nav-menu li:last-child .nav-link {
+    border-bottom: none;
+}
+
+.nav-link:hover {
+    background-color: #f5f6f7;
+}
+
+.nav-link.active {
+    color: #ffffff;
+    background-color: #222;
+}
+
+
+/* =========================================================
+   TABLET / DESKTOP - NAV HORIZONTAL
+   ========================================================= */
+
+@media (min-width: 768px) {
+
+    .nav-toggle {
+        display: none;
+    }
+
+    .nav-menu {
+        position: static;
+
+        display: flex;
+
+        flex-direction: row;
+
+        gap: 6px;
+
+        background-color: transparent;
+
+        border: none;
+
+        box-shadow: none;
+    }
+
+    .nav-link {
+        padding: 8px 14px;
+
+        border-radius: 8px;
+
+        border-bottom: none;
+    }
+
+    .nav-link.active {
+        background-color: #222;
+    }
+}
