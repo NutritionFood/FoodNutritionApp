@@ -1,0 +1,237 @@
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+.wishlist-section {
+    margin-top: 25px;
+}
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.wishlist-grid {
+
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 18px;
+
+    margin-top: 20px;
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.wishlist-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background-color: #ffffff;
+
+    border-radius: 12px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.wishlist-card-image {
+
+    width: 100%;
+
+    height: 200px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background-color: #ffffff;
+}
+
+.wishlist-card-image img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+.wishlist-card-info {
+    padding: 18px;
+}
+
+
+/* =========================================================
+   PREFERENCES (dl)
+   ========================================================= */
+
+.wishlist-preferences {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin: 12px 0;
+
+    padding: 12px;
+
+    background-color: #f5f6f7;
+
+    border-radius: 8px;
+}
+
+.wishlist-preferences dt {
+
+    color: #777;
+
+    font-size: 0.75rem;
+
+    margin-bottom: 3px;
+}
+
+.wishlist-preferences dd {
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+}
+
+.wishlist-preferences .wishlist-note {
+    grid-column: 1 / -1;
+}
+
+.wishlist-preferences .wishlist-note dd {
+    font-weight: normal;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.wishlist-card-actions {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 14px;
+}
+
+.wishlist-card-actions .detail-button {
+    flex: 1;
+}
+
+.remove-button {
+
+    padding: 0 16px;
+
+    border: 1px solid #f0b4b4;
+
+    border-radius: 8px;
+
+    background-color: #ffffff;
+
+    color: #c62828;
+
+    font-size: 0.9rem;
+
+    cursor: pointer;
+}
+
+.remove-button:hover {
+    background-color: #ffe5e5;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.wishlist-empty {
+
+    padding: 40px 20px;
+
+    background-color: #ffffff;
+
+    border-radius: 10px;
+
+    text-align: center;
+
+    color: #666;
+}
+
+.wishlist-empty h3 {
+    margin-bottom: 8px;
+
+    color: #333;
+}
+
+.wishlist-empty p {
+    margin-bottom: 18px;
+}
+
+.primary-button-link {
+
+    display: inline-block;
+
+    padding: 11px 22px;
+
+    border-radius: 8px;
+
+    background-color: #222;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 0.9rem;
+}
+
+.primary-button-link:hover {
+    opacity: 0.9;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (min-width: 768px) {
+
+    .wishlist-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+/* =========================================================
+   DESKTOP
+   ========================================================= */
+
+@media (min-width: 1024px) {
+
+    .wishlist-grid {
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+    }
+
+}
