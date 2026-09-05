@@ -2,35 +2,13 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <meta
-        name="description"
-        content="Buscá productos alimenticios y consultá su información nutricional."
-    >
-
-    <title>
-        Buscar productos - Food Nutrition
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="../css/common.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="../css/search.css"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Buscá productos alimenticios y consultá su información nutricional.">
+    <title>Buscar productos - Food Nutrition</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/search.css">
 </head>
-
 
 <body>
 
@@ -54,12 +32,9 @@
 
     </header>
 
-
     <main class="container">
 
-
         <section class="search-section">
-
 
             <header class="section-header">
 
@@ -74,13 +49,11 @@
 
             </header>
 
-
             <!-- ==================================================
                  BÚSQUEDA POR FILTROS
             =================================================== -->
 
             <article class="search-card">
-
 
                 <header class="search-card-header">
 
@@ -94,15 +67,12 @@
 
                 </header>
 
-
                 <p>
                     Combiná los filtros para encontrar
                     productos según sus características.
                 </p>
 
-
                 <form id="filters-form">
-
 
                     <!-- CATEGORÍA -->
 
@@ -112,11 +82,7 @@
                             Categoría
                         </label>
 
-
-                        <select
-                            id="category"
-                            name="category"
-                        >
+                        <select id="category" name="category">
 
                             <option value="">
                                 Todas las categorías
@@ -154,7 +120,6 @@
 
                     </div>
 
-
                     <!-- MARCA -->
 
                     <div class="form-group">
@@ -163,17 +128,9 @@
                             Marca
                         </label>
 
-
-                        <input
-                            id="brand"
-                            name="brand"
-                            type="text"
-                            autocomplete="off"
-                            placeholder="Ej: McCain"
-                        >
+                        <input id="brand" name="brand" type="text" autocomplete="off" placeholder="Ej: McCain">
 
                     </div>
-
 
                     <!-- NUTRI-SCORE -->
 
@@ -183,61 +140,41 @@
                             Nutri-Score
                         </label>
 
-
-                        <select
-                            id="nutrition-grade"
-                            name="nutrition-grade"
-                        >
-
+                        <select id="nutrition-grade" name="nutrition-grade">
                             <option value="">
                                 Todos
                             </option>
-
                             <option value="a">
                                 A - Muy buena calidad nutricional
                             </option>
-
                             <option value="b">
                                 B - Buena calidad nutricional
                             </option>
-
                             <option value="c">
                                 C - Calidad nutricional moderada
                             </option>
-
                             <option value="d">
                                 D - Baja calidad nutricional
                             </option>
-
                             <option value="e">
                                 E - Muy baja calidad nutricional
                             </option>
-
                         </select>
 
                     </div>
 
-
-                    <button
-                        type="submit"
-                        class="primary-button"
-                    >
+                    <button type="submit" class="primary-button">
                         Buscar productos
                     </button>
 
-
                 </form>
 
-
             </article>
-
 
             <!-- ==================================================
                  BÚSQUEDA POR BARCODE
             =================================================== -->
-
             <article class="search-card">
-
 
                 <header class="search-card-header">
 
@@ -251,64 +188,37 @@
 
                 </header>
 
-
                 <p>
                     Ingresá el código de barras para consultar
                     directamente un producto.
                 </p>
 
-
                 <form id="barcode-form">
 
-
                     <div class="form-group">
-
 
                         <label for="barcode">
                             Código de barras
                         </label>
 
-
-                        <input
-                            id="barcode"
-                            name="barcode"
-                            type="text"
-                            inputmode="numeric"
-                            autocomplete="off"
-                            placeholder="7791376000864"
-                            maxlength="14"
-                        >
-
+                        <input id="barcode" name="barcode" type="text" inputmode="numeric" autocomplete="off" placeholder="7791376000864" maxlength="14">
 
                     </div>
 
-
-                    <button
-                        type="submit"
-                        class="primary-button"
-                    >
+                    <button type="submit" class="primary-button">
                         Buscar producto
                     </button>
 
-
                 </form>
-
 
             </article>
 
-
         </section>
-
 
         <!-- ======================================================
              RESULTADOS
         ======================================================= -->
-
-        <section
-            id="results-section"
-            class="results-section"
-        >
-
+        <section id="results-section" class="results-section">
 
             <header class="results-header">
 
@@ -316,36 +226,19 @@
                     Resultados
                 </h2>
 
-
                 <p id="results-count"></p>
 
             </header>
 
+            <div id="search-status" aria-live="polite"></div>
 
-            <div
-                id="search-status"
-                aria-live="polite"
-            ></div>
+            <div id="results-container" class="results-grid"></div>
 
-
-            <div
-                id="results-container"
-                class="results-grid"
-            ></div>
-
-
-            <nav
-                id="pagination"
-                class="pagination"
-                aria-label="Paginación de resultados"
-            ></nav>
-
+            <nav id="pagination" class="pagination" aria-label="Paginación de resultados"></nav>
 
         </section>
 
-
     </main>
-
 
     <footer class="footer">
 
@@ -359,13 +252,6 @@
 
     </footer>
 
-
-    <script
-        type="module"
-        src="../js/controller/searchController.js"
-    ></script>
-
-
+    <script type="module" src="../js/controller/searchController.js"></script>
 </body>
-
 </html>
