@@ -251,18 +251,9 @@ export class FoodNutritionService {
         let lastError;
 
 
-        for (
-            let attempt = 0;
-            attempt <= this.MAX_RETRIES;
-            attempt++
-        ) {
-
+        for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
 
             try {
-
-                // -------------------------------------------------
-                // ESPERA ANTES DE LOS REINTENTOS
-                // -------------------------------------------------
 
                 if (attempt > 0) {
 
