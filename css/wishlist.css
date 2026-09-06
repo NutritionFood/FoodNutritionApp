@@ -191,7 +191,7 @@
 
     border-radius: 8px;
 
-    background-color: #222;
+    background-color: var(--color-accent-strong);
 
     color: #ffffff;
 

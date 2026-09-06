@@ -6,6 +6,11 @@
 // vistas de la aplicación. Se instancia una vez por página
 // indicando cuál es la vista activa.
 //
+// En mobile se muestra como una barra fija inferior (tab
+// bar), con los 5 accesos siempre visibles como íconos.
+// En tablet/desktop se muestra como una barra horizontal
+// dentro del header (ver breakpoints en common.css).
+//
 // Las rutas son absolutas respecto a la raíz del proyecto
 // (ej: "/index.html", "/html/search.html"), por lo que la
 // app debe servirse desde la raíz de FoodNutritionApp
@@ -19,34 +24,67 @@ export class NavComponent {
         {
             id: "home",
             label: "Inicio",
-            href: "/index.html"
+            href: "/index.html",
+            icon: "home"
         },
 
         {
             id: "search",
             label: "Buscar",
-            href: "/html/search.html"
+            href: "/html/search.html",
+            icon: "search"
         },
 
         {
             id: "wishlist",
-            label: "Lista de deseos",
-            href: "/html/wishlist.html"
+            label: "Deseos",
+            href: "/html/wishlist.html",
+            icon: "heart"
         },
 
         {
             id: "history",
             label: "Historial",
-            href: "/html/history.html"
+            href: "/html/history.html",
+            icon: "history"
         },
 
         {
             id: "contact",
             label: "Contacto",
-            href: "/html/contact.html"
+            href: "/html/contact.html",
+            icon: "mail"
         }
 
     ];
+
+s
+    // =========================================================
+    // ÍCONOS (SVG inline, sin dependencias externas)
+    // =========================================================
+
+    static ICON_PATHS = {
+
+        home:
+            '<path d="M3 11.5 12 4l9 7.5"/>' +
+            '<path d="M5 10v9a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1v-9"/>',
+
+        search:
+            '<circle cx="11" cy="11" r="7"/>' +
+            '<line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+
+        heart:
+            '<path d="M12 20s-7-4.35-9.5-8.5C1 8 2.5 4.5 6 4c2 0 3.5 1 4 2 .5-1 2-2 4-2 3.5.5 5 4 3.5 7.5C19 15.65 12 20 12 20Z"/>',
+
+        history:
+            '<circle cx="12" cy="12" r="9"/>' +
+            '<polyline points="12 7 12 12 16 14"/>',
+
+        mail:
+            '<rect x="3" y="5" width="18" height="14" rx="2"/>' +
+            '<polyline points="3 7 12 13 21 7"/>'
+
+    };
 
 
     constructor(container, activePage) {
@@ -78,33 +116,14 @@ export class NavComponent {
                 aria-label="Navegación principal"
             >
 
-                <button
-                    type="button"
-                    class="nav-toggle"
-                    id="nav-toggle"
-                    aria-expanded="false"
-                    aria-controls="nav-menu"
-                >
-                    <span class="nav-toggle-bar"></span>
-                    <span class="nav-toggle-bar"></span>
-                    <span class="nav-toggle-bar"></span>
-
-                    <span class="visually-hidden">
-                        Abrir menú
-                    </span>
-                </button>
-
-
-                <ul
-                    class="nav-menu"
-                    id="nav-menu"
-                >
+                <ul class="nav-menu">
 
                     ${NavComponent.LINKS
                         .map(
                             link => `
 
-                                <li>
+                                <li class="nav-item">
+
                                     <a
                                         href="${link.href}"
                                         class="nav-link${
@@ -118,8 +137,20 @@ export class NavComponent {
                                                 : ""
                                         }
                                     >
-                                        ${link.label}
+
+                                        <span
+                                            class="nav-link-icon"
+                                            aria-hidden="true"
+                                        >
+                                            ${NavComponent.renderIcon(link.icon)}
+                                        </span>
+
+                                        <span class="nav-link-label">
+                                            ${link.label}
+                                        </span>
+
                                     </a>
+
                                 </li>
 
                             `
@@ -133,70 +164,30 @@ export class NavComponent {
 
         `;
 
-
-        this.bindEvents();
-
     }
 
 
     // =========================================================
-    // EVENTOS
+    // RENDERIZAR UN ÍCONO
     // =========================================================
 
-    bindEvents() {
+    static renderIcon(name) {
 
-        const toggle =
-            this.container.querySelector("#nav-toggle");
-
-        const menu =
-            this.container.querySelector("#nav-menu");
+        const path =
+            NavComponent.ICON_PATHS[name] ||
+            "";
 
 
-        if (!toggle || !menu) {
-            return;
-        }
-
-
-        toggle.addEventListener(
-            "click",
-            () => {
-
-                const isOpen =
-                    menu.classList.toggle("open");
-
-
-                toggle.setAttribute(
-                    "aria-expanded",
-                    String(isOpen)
-                );
-
-            }
-        );
-
-
-        // -----------------------------------------------------
-        // CERRAR AL NAVEGAR (mobile)
-        // -----------------------------------------------------
-
-        menu
-            .querySelectorAll(".nav-link")
-            .forEach(link => {
-
-                link.addEventListener(
-                    "click",
-                    () => {
-
-                        menu.classList.remove("open");
-
-                        toggle.setAttribute(
-                            "aria-expanded",
-                            "false"
-                        );
-
-                    }
-                );
-
-            });
+        return `
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >${path}</svg>
+        `;
 
     }
 
