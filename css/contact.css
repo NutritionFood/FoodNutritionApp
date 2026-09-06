@@ -71,7 +71,7 @@
 }
 
 .contact-details a {
-    color: #222;
+    color: var(--color-accent-strong);
 }
 
 

@@ -1,87 +1,8 @@
 /* =========================================================
-   RESET
-========================================================= */
-
-* {
-
-    box-sizing: border-box;
-
-    margin: 0;
-
-    padding: 0;
-
-}
-
-
-html {
-
-    font-size: 16px;
-
-}
-
-
-body {
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    background-color: #f5f6f7;
-
-    color: #222;
-
-    min-height: 100vh;
-
-}
-
-
-/* =========================================================
-   CONTAINER
-========================================================= */
-
-.container {
-
-    width: 100%;
-
-    max-width: 1200px;
-
-    margin: 0 auto;
-
-    padding: 20px;
-
-}
-
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-.header {
-
-    background-color: #ffffff;
-
-    border-bottom: 1px solid #ddd;
-
-}
-
-
-.header h1 {
-
-    font-size: 1.8rem;
-
-    margin-bottom: 8px;
-
-}
-
-
-.header p {
-
-    color: #666;
-
-    font-size: 0.95rem;
-
-}
+   Nota: el reset, .container, .header y .footer ahora se
+   definen en common.css (compartidos por todas las vistas).
+   Acá sólo quedan los estilos propios de búsqueda/listados.
+   ========================================================= */
 
 
 /* =========================================================
@@ -257,7 +178,7 @@ body {
 
     border-radius: 8px;
 
-    background-color: #222;
+    background-color: var(--color-accent-strong);
 
     color: #ffffff;
 
@@ -567,7 +488,7 @@ body {
 
     border-radius: 8px;
 
-    background-color: #222;
+    background-color: var(--color-accent-strong);
 
     color: #ffffff;
 
@@ -639,7 +560,7 @@ body {
 
     border: 4px solid #e5e5e5;
 
-    border-top-color: #222;
+    border-top-color: var(--color-accent-strong);
 
     border-radius: 50%;
 
@@ -810,7 +731,7 @@ body {
 
     border-radius: 8px;
 
-    background-color: #222;
+    background-color: var(--color-accent-strong);
 
     color: #ffffff;
 
@@ -847,32 +768,6 @@ body {
 
 
 /* =========================================================
-   FOOTER
-========================================================= */
-
-.footer {
-
-    margin-top: 40px;
-
-    background-color: #ffffff;
-
-    border-top: 1px solid #ddd;
-
-}
-
-
-.footer p {
-
-    text-align: center;
-
-    color: #666;
-
-    font-size: 0.85rem;
-
-}
-
-
-/* =========================================================
    MOBILE - LANDSCAPE (481px - 767px)
 ========================================================= */
 
@@ -893,13 +788,6 @@ body {
 ========================================================= */
 
 @media (min-width: 768px) {
-
-    .container {
-
-        padding: 30px;
-
-    }
-
 
     .search-section {
 
@@ -946,13 +834,6 @@ body {
 ========================================================= */
 
 @media (min-width: 1024px) {
-
-    .container {
-
-        padding: 40px;
-
-    }
-
 
     .search-section {
 
