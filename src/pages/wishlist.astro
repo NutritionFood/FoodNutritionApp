@@ -1,0 +1,50 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+import "../styles/common.css";
+import "../styles/search.css";
+import "../styles/wishlist.css";
+---
+
+<Layout title="Lista de deseos - Food Nutrition">
+
+    <main class="container">
+
+        <section class="wishlist-section">
+
+            <header class="section-header">
+
+                <h2>
+                    Lista de deseos
+                </h2>
+
+                <p id="wishlist-count"></p>
+
+            </header>
+
+            <div
+                id="wishlist-container"
+                class="wishlist-grid"
+            ></div>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                Food Nutrition - Trabajo Práctico Integrador
+            </p>
+
+        </div>
+
+    </footer>
+
+    <script>
+        import "../controllers/wishlistController.js";
+    </script>
+
+</Layout>

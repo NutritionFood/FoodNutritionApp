@@ -1,20 +1,16 @@
 import { FoodNutritionService } from "../services/foodNutritionService.js";
 import { StorageService } from "../services/storageService.js";
 import { FoodNutritionComponent } from "../components/foodNutritionComponent.js";
-import { initNav } from "../components/navComponent.js";
 
 // =========================================================
 // INICIALIZACIÓN
 // =========================================================
-
-document.addEventListener("DOMContentLoaded", initializeFoodNutrition);
+document.addEventListener(
+    "astro:page-load",
+    initializeFoodNutrition
+);
 
 function initializeFoodNutrition() {
-
-    // =========================================================
-    // NAVEGACIÓN
-    // =========================================================
-    initNav();
 
     // =========================================================
     // ELEMENTOS DEL DOM

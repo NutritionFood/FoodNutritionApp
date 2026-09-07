@@ -30,7 +30,7 @@ export class HistoryComponent {
                     </p>
 
                     <a
-                        href="/html/search.html"
+                        href="/search"
                         class="primary-button-link"
                     >
                         Buscar productos
@@ -80,7 +80,7 @@ export class HistoryComponent {
 
                 <a
                     class="history-item-link"
-                    href="/html/foodNutrition.html?barcode=${encodeURIComponent(item.barcode)}"
+                    href="/foodNutrition?barcode=${encodeURIComponent(item.barcode)}"
                 >
 
                     <div class="history-item-image">

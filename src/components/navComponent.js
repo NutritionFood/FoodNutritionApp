@@ -3,18 +3,21 @@
 // =========================================================
 //
 // Renderiza la navegación principal, común a todas las
-// vistas de la aplicación. Se instancia una vez por página
-// indicando cuál es la vista activa.
+// vistas de la aplicación.
 //
 // En mobile se muestra como una barra fija inferior (tab
 // bar), con los 5 accesos siempre visibles como íconos.
 // En tablet/desktop se muestra como una barra horizontal
-// dentro del header (ver breakpoints en common.css).
+// dentro del header.
 //
-// Las rutas son absolutas respecto a la raíz del proyecto
-// (ej: "/index.html", "/html/search.html"), por lo que la
-// app debe servirse desde la raíz de FoodNutritionApp
-// (por ejemplo con la extensión Live Server de VS Code).
+// Las rutas corresponden a las páginas generadas por Astro:
+//
+// /             -> src/pages/index.astro
+// /search       -> src/pages/search.astro
+// /wishlist     -> src/pages/wishlist.astro
+// /history      -> src/pages/history.astro
+// /contact      -> src/pages/contact.astro
+//
 // =========================================================
 
 export class NavComponent {
@@ -24,43 +27,43 @@ export class NavComponent {
         {
             id: "home",
             label: "Inicio",
-            href: "/index.html",
+            href: "/",
             icon: "home"
         },
 
         {
             id: "search",
             label: "Buscar",
-            href: "/html/search.html",
+            href: "/search",
             icon: "search"
         },
 
         {
             id: "wishlist",
             label: "Deseos",
-            href: "/html/wishlist.html",
+            href: "/wishlist",
             icon: "heart"
         },
 
         {
             id: "history",
             label: "Historial",
-            href: "/html/history.html",
+            href: "/history",
             icon: "history"
         },
 
         {
             id: "contact",
             label: "Contacto",
-            href: "/html/contact.html",
+            href: "/contact",
             icon: "mail"
         }
 
     ];
 
-s
+
     // =========================================================
-    // ÍCONOS (SVG inline, sin dependencias externas)
+    // ÍCONOS
     // =========================================================
 
     static ICON_PATHS = {
@@ -203,7 +206,7 @@ s
 // código en cada archivo.
 // =========================================================
 
-export function initNav(activePage) {
+export function initNav() {
 
     const navContainer =
         document.querySelector("#nav-container");
@@ -219,6 +222,10 @@ export function initNav(activePage) {
     }
 
 
+    const activePage =
+        getActivePage();
+
+
     const nav =
         new NavComponent(
             navContainer,
@@ -228,4 +235,58 @@ export function initNav(activePage) {
 
     nav.render();
 
+}
+
+
+// =========================================================
+// DETERMINAR PÁGINA ACTIVA
+// =========================================================
+
+function getActivePage() {
+
+    const pathname =
+        window.location.pathname;
+
+
+    if (
+        pathname === "/" ||
+        pathname === ""
+    ) {
+        return "home";
+    }
+
+
+    if (
+        pathname.startsWith("/search")
+    ) {
+        return "search";
+    }
+
+
+    if (
+        pathname.startsWith("/wishlist")
+    ) {
+        return "wishlist";
+    }
+
+
+    if (
+        pathname.startsWith("/history")
+    ) {
+        return "history";
+    }
+
+
+    if (
+        pathname.startsWith("/contact")
+    ) {
+        return "contact";
+    }
+
+
+    /*
+     * foodNutrition no tiene un acceso
+     * propio en el menú.
+     */
+    return "";
 }

@@ -1,0 +1,71 @@
+---
+import "../styles/common.css";
+import { ClientRouter } from "astro:transitions";
+---
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content={Astro.props.description ?? "Información nutricional de productos alimenticios"}
+    >
+
+    <title>{Astro.props.title ?? "Food Nutrition"}</title>
+
+    <ClientRouter />
+
+</head>
+
+<body>
+
+    <header
+        class="header"
+        transition:persist
+    >
+
+        <div class="container header-top">
+
+            <div class="header-brand">
+
+                <h1>
+                    Food Nutrition
+                </h1>
+
+                <p>
+                    Información nutricional de productos alimenticios
+                </p>
+
+            </div>
+
+            <div id="nav-container"></div>
+
+        </div>
+
+    </header>
+
+
+    <slot />
+
+
+    <script>
+        import { initNav } from "../components/navComponent.js";
+
+        document.addEventListener(
+            "astro:page-load",
+            initNav
+        );
+    </script>
+
+</body>
+
+</html>

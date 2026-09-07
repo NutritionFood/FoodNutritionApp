@@ -4,9 +4,6 @@ import { FoodNutritionService }
 import { SearchComponent }
     from "../components/searchComponent.js";
 
-import { initNav }
-    from "../components/navComponent.js";
-
 
 // =========================================================
 // CONFIGURACIÓN
@@ -20,19 +17,11 @@ const FEATURED_PRODUCTS_COUNT = 6;
 // =========================================================
 
 document.addEventListener(
-    "DOMContentLoaded",
+    "astro:page-load",
     initializeHome
 );
 
-
 function initializeHome() {
-
-    // =========================================================
-    // NAVEGACIÓN
-    // =========================================================
-
-    initNav("home");
-
 
     // =========================================================
     // ELEMENTOS DEL DOM

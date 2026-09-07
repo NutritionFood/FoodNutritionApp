@@ -1,0 +1,91 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+import "../styles/common.css";
+import "../styles/search.css";
+import "../styles/home.css";
+---
+
+<Layout title="Food Nutrition - Inicio">
+
+    <main class="container">
+
+        <section class="hero">
+
+            <h2>
+                Conocé lo que comés
+            </h2>
+
+            <p>
+                Food Nutrition te permite consultar la información
+                nutricional de miles de productos alimenticios:
+                calorías, proteínas, azúcares, Nutri-Score y mucho
+                más, a partir de los datos abiertos de
+                Open Food Facts. Buscá por categoría, marca o
+                Nutri-Score, o consultá un producto directamente
+                por su código de barras.
+            </p>
+
+            <a
+                href="/search"
+                class="hero-cta"
+            >
+                Buscar productos
+            </a>
+
+        </section>
+
+
+        <section
+            id="featured-section"
+            class="featured-section"
+        >
+
+            <header class="section-header">
+
+                <h2>
+                    Productos destacados
+                </h2>
+
+                <p>
+                    Una muestra de productos disponibles en
+                    nuestra base de datos.
+                </p>
+
+            </header>
+
+
+            <div
+                id="featured-status"
+                aria-live="polite"
+            ></div>
+
+
+            <div
+                id="featured-container"
+                class="results-grid"
+            ></div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                Food Nutrition - Trabajo Práctico Integrador
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <script>
+        import "../controllers/homeController.js";
+    </script>
+
+</Layout>

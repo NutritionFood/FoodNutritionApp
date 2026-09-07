@@ -4,27 +4,16 @@ import { StorageService }
 import { WishlistComponent }
     from "../components/wishlistComponent.js";
 
-import { initNav }
-    from "../components/navComponent.js";
-
 
 // =========================================================
 // INICIALIZACIÓN
 // =========================================================
 
 document.addEventListener(
-    "DOMContentLoaded",
+    "astro:page-load",
     initializeWishlist
 );
-
-
 function initializeWishlist() {
-
-    // =========================================================
-    // NAVEGACIÓN
-    // =========================================================
-
-    initNav("wishlist");
 
 
     // =========================================================
