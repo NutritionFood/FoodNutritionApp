@@ -1,0 +1,27 @@
+{
+  "name": "foodnutritionapp",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NutritionFood/FoodNutritionApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/NutritionFood/FoodNutritionApp/issues"
+  },
+  "homepage": "https://github.com/NutritionFood/FoodNutritionApp#readme",
+  "dependencies": {
+    "@zxing/browser": "^0.2.1",
+    "@zxing/library": "^0.23.0",
+    "astro": "^7.3.1"
+  }
+}

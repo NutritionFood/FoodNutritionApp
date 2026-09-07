@@ -1,34 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
+---
+import Layout from "../layouts/Layout.astro";
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Datos de contacto del estudio de desarrollo.">
-    <title>Contacto - Food Nutrition</title>
-    <link rel="stylesheet" href="../css/common.css">
-    <link rel="stylesheet" href="../css/contact.css">
-</head>
+import "../styles/common.css";
+import "../styles/contact.css";
+---
 
-<body>
-
-    <header class="header">
-
-        <div class="container header-top">
-
-            <div class="header-brand">
-                <h1>Food Nutrition</h1>
-
-                <p>
-                    Información nutricional de productos alimenticios
-                </p>
-            </div>
-
-            <div id="nav-container"></div>
-
-        </div>
-
-    </header>
+<Layout title="Contacto - Food Nutrition">
 
     <main class="container">
 
@@ -128,7 +105,8 @@
 
     </footer>
 
-    <script type="module" src="../js/controller/contactController.js"></script>
+    <script>
+        import "../controllers/contactController.js";
+    </script>
 
-</body>
-</html>
+</Layout>

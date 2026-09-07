@@ -30,7 +30,7 @@ export class WishlistComponent {
                     </p>
 
                     <a
-                        href="/html/search.html"
+                        href="/search"
                         class="primary-button-link"
                     >
                         Buscar productos
@@ -161,7 +161,7 @@ export class WishlistComponent {
                     <div class="wishlist-card-actions">
 
                         <a
-                            href="/html/foodNutrition.html?barcode=${encodeURIComponent(item.barcode)}"
+                            href="/foodNutrition?barcode=${encodeURIComponent(item.barcode)}"
                             class="detail-button"
                         >
                             Ver detalle

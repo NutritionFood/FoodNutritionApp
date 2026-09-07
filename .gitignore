@@ -357,7 +357,9 @@ paket-files/
 # Cake - Uncomment if you are using it
 #tools/**
 #!tools/packages.config
-
+node_modules/
+dist/
+.astro/
 # Tabs Studio
 *.tss
 

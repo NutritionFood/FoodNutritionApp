@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+import "../styles/common.css";
+import "../styles/foodNutrition.css";
+---
+
+<Layout title="Food Nutrition">
+
+    <main class="container">
+
+        <section class="product-section">
+
+            <h2>
+                Producto consultado
+            </h2>
+
+            <div id="product-container">
+                <!-- El producto será renderizado mediante JavaScript -->
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                Food Nutrition - Trabajo Práctico Integrador
+            </p>
+
+        </div>
+
+    </footer>
+
+    <script>
+        import "../controllers/foodNutritionController.js";
+    </script>
+
+</Layout>

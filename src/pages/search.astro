@@ -1,0 +1,523 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+import "../styles/common.css";
+import "../styles/search.css";
+---
+
+<Layout title="Buscar productos - Food Nutrition">
+
+    <main class="container">
+
+        <section class="search-section">
+
+            <header class="section-header">
+
+                <h2>
+                    Buscar productos
+                </h2>
+
+                <p>
+                    Explorá productos mediante filtros o identificá
+                    directamente un producto utilizando su código de barras.
+                </p>
+
+            </header>
+
+
+            <!-- ==================================================
+                 BÚSQUEDA POR FILTROS
+            =================================================== -->
+
+            <article class="search-card">
+
+                <header class="search-card-header">
+
+                    <div>
+
+                        <h3>
+                            Buscar productos
+                        </h3>
+
+                        <p class="search-card-subtitle">
+                            Explorá productos según sus características.
+                        </p>
+
+                    </div>
+
+                    <span class="search-card-badge">
+                        Filtros
+                    </span>
+
+                </header>
+
+                <p class="search-card-description">
+                    Combiná los filtros disponibles para encontrar
+                    productos que coincidan con tus preferencias.
+                </p>
+
+
+                <form id="filters-form" class="filters-form">
+
+                    <!-- CATEGORÍA -->
+
+                    <div class="form-group">
+
+                        <label for="category">
+                            Categoría
+                        </label>
+
+                        <select
+                            id="category"
+                            name="category"
+                        >
+
+                            <option value="">
+                                Todas las categorías
+                            </option>
+
+                            <option value="potatoes">
+                                Papas
+                            </option>
+
+                            <option value="breakfast-cereals">
+                                Cereales para desayuno
+                            </option>
+
+                            <option value="chocolates">
+                                Chocolates
+                            </option>
+
+                            <option value="yogurts">
+                                Yogures
+                            </option>
+
+                            <option value="fruit-juices">
+                                Jugos de frutas
+                            </option>
+
+                            <option value="biscuits">
+                                Galletitas
+                            </option>
+
+                            <option value="pizzas">
+                                Pizzas
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- MARCA -->
+
+                    <div class="form-group">
+
+                        <label for="brand">
+                            Marca
+                        </label>
+
+                        <input
+                            id="brand"
+                            name="brand"
+                            type="text"
+                            autocomplete="off"
+                            placeholder="Ej: McCain"
+                        >
+
+                    </div>
+
+
+                    <!-- NUTRI-SCORE -->
+
+                    <div class="form-group">
+
+                        <label for="nutrition-grade">
+                            Nutri-Score
+                        </label>
+
+                        <select
+                            id="nutrition-grade"
+                            name="nutrition-grade"
+                        >
+
+                            <option value="">
+                                Todos
+                            </option>
+
+                            <option value="a">
+                                A - Muy buena calidad nutricional
+                            </option>
+
+                            <option value="b">
+                                B - Buena calidad nutricional
+                            </option>
+
+                            <option value="c">
+                                C - Calidad nutricional moderada
+                            </option>
+
+                            <option value="d">
+                                D - Baja calidad nutricional
+                            </option>
+
+                            <option value="e">
+                                E - Muy baja calidad nutricional
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-button filters-submit"
+                    >
+                        Buscar productos
+                    </button>
+
+                </form>
+
+            </article>
+
+
+            <!-- ==================================================
+                 IDENTIFICAR PRODUCTO
+            =================================================== -->
+
+            <article class="search-card barcode-card">
+
+                <header class="search-card-header">
+
+                    <div>
+
+                        <h3>
+                            Identificar producto
+                        </h3>
+
+                        <p class="search-card-subtitle">
+                            Consultá un producto mediante su código de barras.
+                        </p>
+
+                    </div>
+
+                    <span class="search-card-badge">
+                        Código de barras
+                    </span>
+
+                </header>
+
+
+                <p class="search-card-description">
+
+                    Ingresá el código manualmente o utilizá la cámara
+                    de tu dispositivo para escanearlo automáticamente.
+
+                </p>
+
+
+                <!-- ==================================================
+                     SELECTOR VISUAL DE MÉTODO
+                =================================================== -->
+
+                <fieldset class="barcode-method-selector">
+
+                    <legend>
+                        Método de búsqueda
+                    </legend>
+
+                    <div class="barcode-method-options">
+
+                        <!-- CÓDIGO MANUAL -->
+
+                        <label class="barcode-method-option">
+
+                            <input
+                                type="radio"
+                                id="barcode-method-manual"
+                                name="barcode-method"
+                                value="manual"
+                                checked
+                            >
+
+                            <span class="barcode-method-option-content">
+
+                                <span
+                                    class="barcode-method-icon"
+                                    aria-hidden="true"
+                                >
+                                    ▣
+                                </span>
+
+                                <span class="barcode-method-text">
+
+                                    <strong>
+                                        Código manual
+                                    </strong>
+
+                                    <small>
+                                        Ingresar el código de barras
+                                    </small>
+
+                                </span>
+
+                            </span>
+
+                        </label>
+
+
+                        <!-- CÁMARA -->
+
+                        <label class="barcode-method-option">
+
+                            <input
+                                type="radio"
+                                id="barcode-method-camera"
+                                name="barcode-method"
+                                value="camera"
+                            >
+
+                            <span class="barcode-method-option-content">
+
+                                <span
+                                    class="barcode-method-icon"
+                                    aria-hidden="true"
+                                >
+                                    ◉
+                                </span>
+
+                                <span class="barcode-method-text">
+
+                                    <strong>
+                                        Usar cámara
+                                    </strong>
+
+                                    <small>
+                                        Escanear automáticamente
+                                    </small>
+
+                                </span>
+
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                </fieldset>
+
+
+                <!-- ==================================================
+                     MÉTODO MANUAL
+                =================================================== -->
+
+                <form id="barcode-form">
+
+                    <div class="form-group">
+
+                        <label for="barcode">
+                            Código de barras
+                        </label>
+
+                        <input
+                            id="barcode"
+                            name="barcode"
+                            type="text"
+                            inputmode="numeric"
+                            autocomplete="off"
+                            placeholder="Ej: 7791376000864"
+                            maxlength="14"
+                            aria-describedby="barcode-help"
+                        >
+
+                        <small
+                            id="barcode-help"
+                            class="form-help"
+                        >
+                            Ingresá entre 8 y 14 números.
+                        </small>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                    >
+                        Buscar producto
+                    </button>
+
+                </form>
+
+
+                <!-- ==================================================
+                     MÉTODO CÁMARA
+                =================================================== -->
+
+                <div
+                    id="camera-search"
+                    class="camera-search"
+                    hidden
+                >
+
+                    <div
+                        id="camera-container"
+                        class="camera-container"
+                        hidden
+                    >
+
+                        <div class="camera-preview">
+
+                            <video
+                                id="barcode-video"
+                                class="barcode-video"
+                                autoplay
+                                muted
+                                playsinline
+                            ></video>
+
+
+                            <!-- MARCO DE ESCANEO -->
+
+                            <div
+                                class="scanner-overlay"
+                                aria-hidden="true"
+                            >
+
+                                <div class="scanner-frame">
+
+                                    <span class="scanner-corner top-left"></span>
+
+                                    <span class="scanner-corner top-right"></span>
+
+                                    <span class="scanner-corner bottom-left"></span>
+
+                                    <span class="scanner-corner bottom-right"></span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ESTADO DE LA CÁMARA -->
+
+                    <div
+                        id="camera-status"
+                        class="camera-status"
+                        role="status"
+                        aria-live="polite"
+                    >
+                        Presioná "Iniciar cámara" para comenzar.
+                    </div>
+
+
+                    <!-- ACCIONES -->
+
+                    <div class="camera-actions">
+
+                        <button
+                            type="button"
+                            id="scan-barcode-button"
+                            class="primary-button"
+                        >
+                            Iniciar cámara
+                        </button>
+
+
+                        <button
+                            type="button"
+                            id="stop-camera-button"
+                            class="secondary-button"
+                            hidden
+                        >
+                            Detener cámara
+                        </button>
+
+                    </div>
+
+
+                    <p class="camera-help">
+
+                        Colocá el código de barras dentro del
+                        marco de escaneo. La aplicación intentará
+                        detectarlo automáticamente.
+
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <!-- ==================================================
+                 ESTADO DE LA BÚSQUEDA
+            =================================================== -->
+
+            <div
+                id="search-status"
+                aria-live="polite"
+            ></div>
+
+        </section>
+
+
+        <!-- ======================================================
+             RESULTADOS
+        ======================================================= -->
+
+        <section
+            id="results-section"
+            class="results-section"
+        >
+
+            <header class="results-header">
+
+                <h2>
+                    Resultados
+                </h2>
+
+                <p id="results-count"></p>
+
+            </header>
+
+
+            <div
+                id="results-container"
+                class="results-grid"
+            ></div>
+
+
+            <nav
+                id="pagination"
+                class="pagination"
+                aria-label="Paginación de resultados"
+            ></nav>
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                Food Nutrition - Trabajo Práctico Integrador
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <script>
+        import "../controllers/searchController.js";
+    </script>
+
+</Layout>

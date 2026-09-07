@@ -241,7 +241,7 @@ export class SearchComponent {
 
                                 <a
                                     class="detail-button"
-                                    href="/html/foodNutrition.html?barcode=${encodeURIComponent(
+                                    href="/foodNutrition?barcode=${encodeURIComponent(
                                         barcode
                                     )}"
                                     aria-label="Ver detalle de ${this.escapeHtml(name)}"

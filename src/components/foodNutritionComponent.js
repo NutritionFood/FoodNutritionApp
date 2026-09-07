@@ -227,7 +227,7 @@ export class FoodNutritionComponent {
                         ✓ Este producto ya está en tu
                         lista de deseos.
 
-                        <a href="/html/wishlist.html">
+                        <a href="/wishlist">
                             Ver lista de deseos
                         </a>
                     </div>

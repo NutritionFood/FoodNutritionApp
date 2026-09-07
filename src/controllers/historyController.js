@@ -4,27 +4,16 @@ import { StorageService }
 import { HistoryComponent }
     from "../components/historyComponent.js";
 
-import { initNav }
-    from "../components/navComponent.js";
-
-
 // =========================================================
 // INICIALIZACIÓN
 // =========================================================
 
 document.addEventListener(
-    "DOMContentLoaded",
+    "astro:page-load",
     initializeHistory
 );
 
-
 function initializeHistory() {
-
-    // =========================================================
-    // NAVEGACIÓN
-    // =========================================================
-
-    initNav("history");
 
 
     // =========================================================

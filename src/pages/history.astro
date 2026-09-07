@@ -1,0 +1,60 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+import "../styles/common.css";
+import "../styles/search.css";
+import "../styles/history.css";
+---
+
+<Layout title="Historial - Food Nutrition">
+
+    <main class="container">
+
+        <section class="history-section">
+
+            <header class="section-header history-section-header">
+
+                <div>
+                    <h2>
+                        Historial
+                    </h2>
+
+                    <p id="history-count"></p>
+                </div>
+
+                <button
+                    type="button"
+                    id="clear-history-button"
+                    class="clear-history-button"
+                    hidden
+                >
+                    Vaciar historial
+                </button>
+
+            </header>
+
+            <div
+                id="history-container"
+            ></div>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                Food Nutrition - Trabajo Práctico Integrador
+            </p>
+
+        </div>
+
+    </footer>
+
+    <script>
+        import "../controllers/historyController.js";
+    </script>
+
+</Layout>
