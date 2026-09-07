@@ -256,7 +256,29 @@ export class StorageService {
         );
 
     }
+    // =========================================================
+    // ELIMINAR UNA VISITA
+    // =========================================================
+    //
+    // Elimina del historial únicamente el producto indicado
+    // por su código de barras.
+    // =========================================================
 
+    static removeFromHistory(barcode) {
+
+        const history =
+            this.getHistory()
+                .filter(
+                    item => item.barcode !== barcode
+                );
+
+
+        this.writeList(
+            this.HISTORY_KEY,
+            history
+        );
+
+    }
 
     // =========================================================
     // VACIAR HISTORIAL
