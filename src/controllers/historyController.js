@@ -4,6 +4,7 @@ import { StorageService }
 import { HistoryComponent }
     from "../components/historyComponent.js";
 
+
 // =========================================================
 // INICIALIZACIÓN
 // =========================================================
@@ -12,6 +13,7 @@ document.addEventListener(
     "astro:page-load",
     initializeHistory
 );
+
 
 function initializeHistory() {
 
@@ -63,6 +65,10 @@ function initializeHistory() {
     renderHistory();
 
 
+    // =========================================================
+    // RENDER HISTORIAL
+    // =========================================================
+
     function renderHistory() {
 
         const items =
@@ -73,6 +79,10 @@ function initializeHistory() {
             items
         );
 
+
+        // -----------------------------------------------------
+        // ACTUALIZAR CONTADOR
+        // -----------------------------------------------------
 
         if (historyCount) {
 
@@ -87,6 +97,10 @@ function initializeHistory() {
 
         }
 
+
+        // -----------------------------------------------------
+        // MOSTRAR / OCULTAR BOTÓN "VACIAR HISTORIAL"
+        // -----------------------------------------------------
 
         if (clearHistoryButton) {
 
@@ -119,7 +133,109 @@ function initializeHistory() {
 
             StorageService.clearHistory();
 
+
             renderHistory();
+
+        }
+    );
+
+
+    // =========================================================
+    // ELIMINAR ELEMENTO INDIVIDUAL
+    // =========================================================
+    //
+    // Utilizamos delegación de eventos porque los botones
+    // son generados dinámicamente por HistoryComponent.
+    // =========================================================
+
+    historyContainer.addEventListener(
+        "click",
+        event => {
+
+            const deleteButton =
+                event.target.closest(
+                    "[data-delete-history]"
+                );
+
+
+            if (!deleteButton) {
+                return;
+            }
+
+
+            // -------------------------------------------------
+            // EVITAR QUE EL CLICK CONTINÚE HACIA EL ENLACE
+            // -------------------------------------------------
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            // -------------------------------------------------
+            // OBTENER CÓDIGO DEL PRODUCTO
+            // -------------------------------------------------
+
+            const barcode =
+                deleteButton.dataset.barcode;
+
+
+            if (!barcode) {
+                return;
+            }
+
+
+            // -------------------------------------------------
+            // CONFIRMACIÓN
+            // -------------------------------------------------
+
+            const confirmed =
+                window.confirm(
+                    "¿Eliminar este producto del historial?"
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            // -------------------------------------------------
+            // ELEMENTO VISUAL
+            // -------------------------------------------------
+
+            const historyItem =
+                deleteButton.closest(
+                    "[data-history-item]"
+                );
+
+
+            // -------------------------------------------------
+            // ANIMACIÓN DE SALIDA
+            // -------------------------------------------------
+
+            historyItem?.classList.add(
+                "is-removing"
+            );
+
+
+            // -------------------------------------------------
+            // ESPERAR LA ANIMACIÓN
+            // -------------------------------------------------
+
+            window.setTimeout(
+                () => {
+
+                    StorageService.removeFromHistory(
+                        barcode
+                    );
+
+
+                    renderHistory();
+
+                },
+                180
+            );
 
         }
     );

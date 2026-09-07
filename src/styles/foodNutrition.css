@@ -99,7 +99,8 @@
 .food-brand {
     display: block;
 
-    color: #666;
+    color:
+    var(--color-text-secondary);
 
     font-size: 0.9rem;
 
@@ -121,7 +122,8 @@
 }
 
 .food-category {
-    color: #666;
+    color:
+    var(--color-text-secondary);
 
     font-size: 0.9rem;
 
@@ -136,7 +138,17 @@
     font-size: 0.8rem;
 }
 
+.food-detail {
 
+    background-color:
+        var(--color-surface);
+
+    border:
+        1px solid var(--color-border-soft);
+
+    box-shadow:
+        var(--shadow-md);
+}
 /* =========================================================
    NUTRI-SCORE
    ========================================================= */
@@ -214,7 +226,8 @@
 
     background-color: #eeeeee;
 
-    color: #666;
+    color:
+    var(--color-text-secondary);
 }
 
 .nutriscore-unavailable strong {
@@ -302,7 +315,8 @@
 }
 
 .wishlist-form-intro {
-    color: #666;
+    color:
+    var(--color-text-secondary);
 
     font-size: 0.85rem;
 
@@ -511,7 +525,8 @@
 
     display: block;
 
-    color: #666;
+    color:
+    var(--color-text-secondary);
 
     font-size: 0.8rem;
 
@@ -550,7 +565,8 @@
 }
 
 .food-serving span {
-    color: #666;
+    color:
+    var(--color-text-secondary);
 }
 
 

@@ -76,7 +76,11 @@ export class HistoryComponent {
 
         return `
 
-            <li class="history-item">
+            <li
+                class="history-item"
+                data-history-item
+                data-barcode="${this.escapeHtml(item.barcode)}"
+            >
 
                 <a
                     class="history-item-link"
@@ -146,6 +150,40 @@ export class HistoryComponent {
                     }
 
                 </a>
+
+
+                <!-- =========================================
+                     BOTÓN ELIMINAR
+                     ========================================= -->
+
+                <button
+                    type="button"
+                    class="history-delete-button"
+                    data-delete-history
+                    data-barcode="${this.escapeHtml(item.barcode)}"
+                    aria-label="Eliminar ${this.escapeHtml(item.name)} del historial"
+                    title="Eliminar del historial"
+                >
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                    >
+
+                        <path d="M3 6h18"></path>
+
+                        <path d="M8 6V4h8v2"></path>
+
+                        <path d="M19 6l-1 15H6L5 6"></path>
+
+                        <path d="M10 11v6"></path>
+
+                        <path d="M14 11v6"></path>
+
+                    </svg>
+
+                </button>
 
             </li>
 

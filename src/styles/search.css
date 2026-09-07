@@ -158,7 +158,6 @@
 
 }
 
-
 .form-group input,
 .form-group select {
 
@@ -168,29 +167,38 @@
 
     padding: 10px 12px;
 
-    border: 1px solid #ccc;
+    border:
+        1px solid var(--color-border);
 
-    border-radius: 8px;
+    border-radius: 9px;
 
-    background-color: #ffffff;
+    background-color:
+        var(--color-surface);
 
-    color: #222;
+    color:
+        var(--color-text);
 
     font-size: 1rem;
 
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
 }
-
-
 .form-group input:focus,
 .form-group select:focus {
 
     outline: none;
 
-    border-color: #555;
+    border-color:
+        var(--color-primary);
 
     box-shadow:
-        0 0 0 2px rgba(0, 0, 0, 0.05);
+        0 0 0 3px
+        rgba(23, 107, 77, 0.12);
 
+    background-color:
+        var(--color-surface);
 }
 
 
@@ -344,20 +352,26 @@
 
 }
 
-
 .barcode-method-option input:checked
 + .barcode-method-option-content {
 
     border-color:
-        var(--color-accent-strong);
+        var(--color-primary);
 
-    background-color: #f7f7f7;
+    background-color:
+        var(--color-primary-light);
 
     box-shadow:
-        0 0 0 1px var(--color-accent-strong);
-
+        0 0 0 1px
+        var(--color-primary);
 }
 
+.barcode-method-option:hover
+.barcode-method-option-content {
+
+    border-color:
+        var(--color-primary);
+}
 
 .barcode-method-option input:focus-visible
 + .barcode-method-option-content {
@@ -369,33 +383,30 @@
 
 }
 
-
 .barcode-method-icon {
 
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     flex: 0 0 40px;
 
     width: 40px;
-
     height: 40px;
 
-    border-radius: 9px;
+    border-radius: 10px;
 
-    background-color: #eeeeee;
+    background-color:
+        var(--color-primary-light);
 
-    color: #444;
+    color:
+        var(--color-primary);
 
     font-size: 1.2rem;
 
     font-weight: bold;
-
 }
-
 
 .barcode-method-text {
 
@@ -634,13 +645,22 @@
 }
 
 .camera-status.is-success {
-    border-color: #2e8b57;
-    background: #eefaf3;
+
+    border-color:
+        var(--color-success);
+
+    background:
+        var(--color-success-light);
 }
 
+
 .camera-status.is-error {
-    border-color: #c0392b;
-    background: #fff1ef;
+
+    border-color:
+        var(--color-danger);
+
+    background:
+        var(--color-danger-light);
 }
 
 .camera-help {
@@ -703,7 +723,6 @@
 /* =========================================================
    BUTTONS
 ========================================================= */
-
 .primary-button {
 
     width: 100%;
@@ -712,24 +731,52 @@
 
     border: none;
 
-    border-radius: 8px;
+    border-radius: 9px;
 
-    background-color:
-        var(--color-accent-strong);
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-accent),
+            var(--color-accent-strong)
+        );
 
-    color: #ffffff;
+    color: #FFFFFF;
 
     font-size: 0.95rem;
 
+    font-weight: 700;
+
     cursor: pointer;
 
+    box-shadow:
+        0 4px 10px
+        rgba(217, 107, 31, 0.16);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
 }
 
 
 .primary-button:hover {
 
-    opacity: 0.9;
+    opacity: 1;
 
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 7px 16px
+        rgba(217, 107, 31, 0.22);
+}
+
+
+.primary-button:active {
+
+    transform:
+        translateY(0)
+        scale(0.99);
 }
 
 
@@ -739,6 +786,9 @@
 
     cursor: not-allowed;
 
+    transform: none;
+
+    box-shadow: none;
 }
 
 
@@ -752,7 +802,6 @@
 
 }
 
-
 .secondary-button {
 
     width: 100%;
@@ -762,27 +811,40 @@
     padding: 10px 14px;
 
     border:
-        1px solid #ccc;
+        1px solid var(--color-border);
 
-    border-radius: 8px;
+    border-radius: 9px;
 
-    background-color: #ffffff;
+    background-color:
+        var(--color-surface);
 
-    color: #333;
+    color:
+        var(--color-primary-dark);
 
     font-size: 0.95rem;
 
+    font-weight: 600;
+
     cursor: pointer;
 
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        transform 0.2s ease;
 }
 
 
 .secondary-button:hover {
 
-    background-color: #f3f3f3;
+    background-color:
+        var(--color-primary-light);
 
+    border-color:
+        var(--color-primary);
+
+    transform:
+        translateY(-1px);
 }
-
 
 /* =========================================================
    RESULTS
@@ -842,7 +904,6 @@
 /* =========================================================
    PRODUCT CARD
 ========================================================= */
-
 .product-card {
 
     display: flex;
@@ -853,13 +914,78 @@
 
     overflow: hidden;
 
-    background-color: #ffffff;
+    background-color:
+        var(--color-surface);
 
-    border-radius: 12px;
+    border:
+        1px solid var(--color-border-soft);
+
+    border-radius: 14px;
 
     box-shadow:
-        0 4px 15px rgba(0, 0, 0, 0.06);
+        var(--shadow-sm);
 
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease;
+
+    animation:
+        fadeInUp
+        0.4s
+        ease-out
+        both;
+}
+.product-card:nth-child(1) {
+    animation-delay: 0.03s;
+}
+
+.product-card:nth-child(2) {
+    animation-delay: 0.06s;
+}
+
+.product-card:nth-child(3) {
+    animation-delay: 0.09s;
+}
+
+.product-card:nth-child(4) {
+    animation-delay: 0.12s;
+}
+
+.product-card:nth-child(5) {
+    animation-delay: 0.15s;
+}
+
+.product-card:nth-child(6) {
+    animation-delay: 0.18s;
+}
+
+.product-card:nth-child(7) {
+    animation-delay: 0.21s;
+}
+
+.product-card:nth-child(8) {
+    animation-delay: 0.24s;
+}
+
+.product-card:nth-child(9) {
+    animation-delay: 0.27s;
+}
+
+.product-card:nth-child(10) {
+    animation-delay: 0.30s;
+}
+
+.product-card:hover {
+
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(23, 107, 77, 0.20);
+
+    box-shadow:
+        var(--shadow-lg);
 }
 
 
@@ -878,8 +1004,6 @@
     background-color: #ffffff;
 
 }
-
-
 .product-image img {
 
     width: 100%;
@@ -888,6 +1012,16 @@
 
     object-fit: contain;
 
+    transition:
+        transform 0.3s ease;
+}
+
+
+.product-card:hover
+.product-image img {
+
+    transform:
+        scale(1.035);
 }
 
 
@@ -930,14 +1064,15 @@
 
     display: block;
 
-    color: #777;
+    color:
+        var(--color-primary);
 
     font-size: 0.8rem;
 
+    font-weight: 600;
+
     margin-bottom: 6px;
-
 }
-
 
 .product-name {
 
@@ -947,6 +1082,10 @@
 
     margin-bottom: 15px;
 
+    color:
+        var(--color-text);
+
+    letter-spacing: -0.01em;
 }
 
 
@@ -1074,12 +1213,16 @@
 
     margin-top: auto;
 
-    border-radius: 8px;
+    border-radius: 9px;
 
-    background-color:
-        var(--color-accent-strong);
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-accent),
+            var(--color-accent-strong)
+        );
 
-    color: #ffffff;
+    color: #FFFFFF;
 
     text-align: center;
 
@@ -1087,12 +1230,24 @@
 
     font-size: 0.9rem;
 
+    font-weight: 700;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
+
 
 .detail-button:hover {
 
-    opacity: 0.9;
+    opacity: 1;
 
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 5px 12px
+        rgba(217, 107, 31, 0.18);
 }
 
 
@@ -1277,14 +1432,19 @@
 
     margin-bottom: 18px;
 
-    border-radius: 8px;
+    border:
+        1px solid
+        rgba(198, 40, 40, 0.20);
 
-    background-color: #ffe5e5;
+    border-radius: 9px;
 
-    color: #c62828;
+    background-color:
+        var(--color-danger-light);
+
+    color:
+        var(--color-danger);
 
     font-size: 0.9rem;
-
 }
 
 

@@ -35,11 +35,34 @@
 
     overflow: hidden;
 
-    background-color: #ffffff;
+    background-color:
+        var(--color-surface);
 
-    border-radius: 12px;
+    border:
+        1px solid var(--color-border-soft);
 
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+
+    box-shadow:
+        var(--shadow-sm);
+
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease;
+}
+
+
+.wishlist-card:hover {
+
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(23, 107, 77, 0.20);
+
+    box-shadow:
+        var(--shadow-md);
 }
 
 .wishlist-card-image {
@@ -77,7 +100,8 @@
 
     display: grid;
 
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+        repeat(2, 1fr);
 
     gap: 10px;
 
@@ -85,14 +109,18 @@
 
     padding: 12px;
 
-    background-color: #f5f6f7;
+    background-color:
+        var(--color-primary-light);
 
-    border-radius: 8px;
+    border:
+        1px solid var(--color-border-soft);
+
+    border-radius: 9px;
 }
-
 .wishlist-preferences dt {
 
-    color: #777;
+    color:
+        var(--color-primary);
 
     font-size: 0.75rem;
 
@@ -138,21 +166,39 @@
 
     padding: 0 16px;
 
-    border: 1px solid #f0b4b4;
+    border:
+        1px solid
+        rgba(198, 40, 40, 0.20);
 
-    border-radius: 8px;
+    border-radius: 9px;
 
-    background-color: #ffffff;
+    background-color:
+        var(--color-surface);
 
-    color: #c62828;
+    color:
+        var(--color-danger);
 
     font-size: 0.9rem;
 
     cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
 }
 
+
 .remove-button:hover {
-    background-color: #ffe5e5;
+
+    background-color:
+        var(--color-danger-light);
+
+    border-color:
+        rgba(198, 40, 40, 0.35);
+
+    transform:
+        translateY(-1px);
 }
 
 
@@ -182,26 +228,45 @@
 .wishlist-empty p {
     margin-bottom: 18px;
 }
-
 .primary-button-link {
 
     display: inline-block;
 
     padding: 11px 22px;
 
-    border-radius: 8px;
+    border-radius: 9px;
 
-    background-color: var(--color-accent-strong);
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-accent),
+            var(--color-accent-strong)
+        );
 
-    color: #ffffff;
+    color: #FFFFFF;
 
     text-decoration: none;
 
     font-size: 0.9rem;
+
+    font-weight: 700;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
+
 .primary-button-link:hover {
-    opacity: 0.9;
+
+    opacity: 1;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 6px 14px
+        rgba(217, 107, 31, 0.20);
 }
 
 
