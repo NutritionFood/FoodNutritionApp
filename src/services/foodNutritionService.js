@@ -151,7 +151,7 @@ export class FoodNutritionService {
 
         const params =
             new URLSearchParams();
-
+            params.set("countries_tags_en", "argentina");
 
         // -----------------------------------------------------
         // CATEGORÍA

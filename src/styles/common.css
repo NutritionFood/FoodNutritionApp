@@ -107,7 +107,8 @@ html {
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    line-height: 1.6;
 
     background-color: var(--color-bg);
     color: var(--color-text);
@@ -140,10 +141,80 @@ main {
    ========================================================= */
 
 .header h1 {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
     font-size: 1.8rem;
-    margin-bottom: 8px;
+    margin-bottom: 0;
     color: var(--color-primary-dark);
     letter-spacing: -0.02em;
+}
+
+.header-logo {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    width: 56px;
+    height: 48px;
+    max-width: none;
+    /* Compensa el espacio transparente sin cambiar el tamaño del logo. */
+    margin-left: -15px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.header {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border-soft);
+}
+
+.header-brand p {
+    grid-column: 1 / -1;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    max-width: 36ch;
+}
+
+main.container {
+    padding-top: clamp(16px, 3vw, 32px);
+    padding-bottom: clamp(28px, 5vw, 56px);
+}
+
+h1, h2, h3 {
+    line-height: 1.2;
+    text-wrap: balance;
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+}
+
+button, a, input, select, textarea {
+    -webkit-tap-highlight-color: transparent;
+}
+
+a:focus-visible, button:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 4px;
+}
+
+img {
+    max-width: 100%;
+}
+
+.section-header {
+    margin-bottom: 24px;
+}
+
+.section-header h2 {
+    color: var(--color-primary-dark);
+    font-size: clamp(1.65rem, 3vw, 2.2rem);
+    letter-spacing: -0.035em;
+    margin-bottom: 10px;
+}
+
+.section-header p {
+    color: var(--color-text-secondary);
 }
 /* =========================================================
    FOOTER
@@ -191,6 +262,7 @@ main {
 
 .header-top {
     display: flex;
+    flex-wrap: wrap;
 
     align-items: center;
     justify-content: space-between;
@@ -199,6 +271,9 @@ main {
 }
 
 .header-brand {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 8px 10px;
     min-width: 0;
 }
 
@@ -364,6 +439,7 @@ main {
         padding: 4px;
 
         gap: 2px;
+        flex-wrap: wrap;
 
         box-shadow:
             var(--shadow-sm);
@@ -487,4 +563,39 @@ main {
         ease-out
         both;
 
+}
+
+@media (max-width: 767px) {
+    .container {
+        padding-inline: clamp(16px, 4vw, 28px);
+    }
+
+    .header-top {
+        padding-block: 20px;
+    }
+
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .main-nav {
+        box-shadow: 0 -4px 20px rgba(15, 77, 58, 0.12);
+    }
+
+    .nav-link {
+        min-height: 60px;
+    }
+
+    .nav-link.active {
+        background: rgba(242, 140, 40, 0.12);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
