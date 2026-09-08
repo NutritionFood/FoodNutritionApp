@@ -107,10 +107,21 @@ export class FoodNutritionService {
         // REQUEST CON REINTENTOS
         // -----------------------------------------------------
 
-        const data =
-            await this.requestWithRetry(
-                url
-            );
+        let data;
+
+        try {
+            data = await this.requestWithRetry(url);
+        } catch (error) {
+            if (error?.status === 404) {
+                const notFoundError = new Error(
+                    "Producto no encontrado. No hay un producto registrado con ese código de barras."
+                );
+                notFoundError.status = 404;
+                throw notFoundError;
+            }
+
+            throw error;
+        }
 
 
         // -----------------------------------------------------
@@ -123,7 +134,7 @@ export class FoodNutritionService {
         ) {
 
             throw new Error(
-                "No se encontró ningún producto con ese código de barras."
+                "Producto no encontrado. No hay un producto registrado con ese código de barras."
             );
 
         }
