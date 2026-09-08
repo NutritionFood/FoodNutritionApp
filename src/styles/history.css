@@ -104,7 +104,7 @@
     border:
         1px solid var(--color-border-soft);
 
-    border-radius: 12px;
+    border-radius: 18px;
 
     box-shadow:
         var(--shadow-sm);
@@ -160,7 +160,7 @@
 
     flex: 1;
 
-    padding: 12px;
+    padding: clamp(12px, 2vw, 20px);
 
     text-decoration: none;
 
@@ -288,7 +288,7 @@
 
     justify-content: center;
 
-    background-color: #f5f6f7;
+    background-color: var(--color-surface-soft);
 
     border-radius: 8px;
 
@@ -350,7 +350,8 @@
     color:
         var(--color-text);
 
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
 
     overflow: hidden;
 
@@ -360,7 +361,7 @@
 .history-item-date {
 
     color:
-        var(--color-text-muted);
+        var(--color-text-secondary);
 
     font-size: 0.75rem;
 }
@@ -379,11 +380,12 @@
 
 .history-empty {
 
-    padding: 40px 20px;
+    padding: clamp(36px, 6vw, 64px) 24px;
+    border: 1px dashed var(--color-border);
 
     background-color: #ffffff;
 
-    border-radius: 10px;
+    border-radius: 20px;
 
     text-align: center;
 

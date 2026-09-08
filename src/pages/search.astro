@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 
 import "../styles/common.css";
 import "../styles/search.css";
+
 ---
 
 <Layout title="Buscar productos - Food Nutrition">
@@ -67,45 +68,51 @@ import "../styles/search.css";
                             Categoría
                         </label>
 
-                        <select
-                            id="category"
-                            name="category"
-                        >
+                        <select id="category" name="category">
+                            <option value="">Todas las categorías</option>
 
-                            <option value="">
-                                Todas las categorías
-                            </option>
+                            <optgroup label="Carnes, pescados">
+                                <option value="meats">Carnes</option>
+                                <option value="fishes">Pescados</option>
+                            </optgroup>
 
-                            <option value="potatoes">
-                                Papas
-                            </option>
+                                <optgroup label="Lácteos">
+                                    <option value="dairy-products">Lácteos en general</option>
+                                    <option value="cheeses">Quesos</option>
+                                    <option value="yogurts">Yogures</option>
+                                </optgroup>
 
-                            <option value="breakfast-cereals">
-                                Cereales para desayuno
-                            </option>
+                                <optgroup label="Frutas, verduras y legumbres">
+                                    <option value="fruits">Frutas</option>
+                                    <option value="vegetables">Verduras</option>
+                                    <option value="legumes">Legumbres</option>
+                                </optgroup>
 
-                            <option value="chocolates">
-                                Chocolates
-                            </option>
+                                <optgroup label="Pastas, arroz y panificados">
+                                    <option value="pastas">Pastas</option>
+                                    <option value="breads">Panes</option>
+                                    <option value="breakfast-cereals">Cereales para desayuno</option>
+                                </optgroup>
 
-                            <option value="yogurts">
-                                Yogures
-                            </option>
+                                <optgroup label="Snacks y dulces">
+                                    <option value="snacks">Snacks en general</option>
+                                    <option value="chips">Papas fritas y chips</option>
+                                    <option value="candies">Golosinas</option>
+                                </optgroup>
 
-                            <option value="fruit-juices">
-                                Jugos de frutas
-                            </option>
+                                <optgroup label="Comidas y salsas">
+                                    <option value="prepared-meals">Comidas preparadas</option>
+                                    <option value="pizzas">Pizzas</option>
+                                    <option value="sauces">Salsas</option>
+                                </optgroup>
 
-                            <option value="biscuits">
-                                Galletitas
-                            </option>
-
-                            <option value="pizzas">
-                                Pizzas
-                            </option>
-
+                                <optgroup label="Bebidas">
+                                    <option value="beverages">Bebidas en general</option>
+                                    <option value="sodas">Gaseosas</option>
+                                    <option value="fruit-juices">Jugos de frutas</option>
+                                    <option value="waters">Aguas</option>
+                                </optgroup>
                         </select>
-
                     </div>
 
 

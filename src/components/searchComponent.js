@@ -83,7 +83,7 @@ export class SearchComponent {
 
 
         const image =
-            product?.image_front_url ||
+            product?.image_front_url?.trim() ||
             null;
 
 
@@ -117,37 +117,22 @@ export class SearchComponent {
                 class="product-card"
             >
 
-                <div
-                    class="product-image"
-                >
-
-                    ${
-                        image
-
-                            ? `
-
-                                <img
-                                    src="${this.escapeHtml(image)}"
-                                    alt="${this.escapeHtml(name)}"
-                                    loading="lazy"
-                                    decoding="async"
-                                >
-
-                            `
-
-                            : `
-
-                                <div
-                                    class="no-image"
-                                    role="img"
-                                    aria-label="Imagen no disponible"
-                                >
-                                    Imagen no disponible
-                                </div>
-
-                            `
-                    }
-
+                <div class="product-image">
+                    <img
+                        src="${this.escapeHtml(
+                            image || "/image/logoFoodNutrition.png"
+                        )}"
+                        alt="${this.escapeHtml(
+                            image ? name : "Imagen del producto no disponible"
+                        )}"
+                        loading="lazy"
+                        decoding="async"
+                        onerror="
+                            this.onerror = null;
+                            this.src = '/image/logoFoodNutrition.png';
+                            this.alt = 'Imagen del producto no disponible';
+                        "
+                    >
                 </div>
 
 

@@ -1,0 +1,71 @@
+<article class="contact-card contact-form-card">
+    <h3>Escribinos un mensaje</h3>
+
+    <p class="contact-form-help">
+        Completá los campos para enviarnos tu consulta.
+    </p>
+
+    <form
+        id="contact-form"
+        action="https://formsubmit.co/ajax/lopezfranco051@gmail.com"
+        method="POST"
+    >
+        <div class="contact-form-fields">
+            <div class="contact-field">
+                <label for="contact-name">Nombre</label>
+                <input
+                    id="contact-name"
+                    name="name"
+                    type="text"
+                    autocomplete="name"
+                    maxlength="100"
+                    required
+                />
+            </div>
+
+            <div class="contact-field">
+                <label for="contact-email">Correo electrónico</label>
+                <input
+                    id="contact-email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    maxlength="254"
+                    required
+                />
+            </div>
+
+            <div class="contact-field contact-field-wide">
+                <label for="contact-subject">Asunto</label>
+                <input
+                    id="contact-subject"
+                    name="_subject"
+                    type="text"
+                    maxlength="120"
+                    required
+                />
+            </div>
+
+            <div class="contact-field contact-field-wide">
+                <label for="contact-message">Mensaje</label>
+                <textarea
+                    id="contact-message"
+                    name="message"
+                    rows="6"
+                    maxlength="2000"
+                    required
+                ></textarea>
+            </div>
+        </div>
+
+        <button type="submit" class="contact-submit">
+            Enviar mensaje
+        </button>
+
+        <p
+            id="contact-form-status"
+            class="contact-form-help"
+            role="status"
+        ></p>
+    </form>
+</article>
