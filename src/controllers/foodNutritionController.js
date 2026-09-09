@@ -65,6 +65,8 @@ function initializeFoodNutrition() {
     // CARGAR PRODUCTO
     // =========================================================
 
+    const request = new AbortController();
+    document.addEventListener("astro:before-swap", () => request.abort(), { once: true });
     loadProduct(barcode);
 
     productContainer.addEventListener("wishlist:submit", event => {
@@ -173,7 +175,10 @@ function initializeFoodNutrition() {
             // CONSULTAR API
             // -------------------------------------------------
 
-            const product =await FoodNutritionService.getProductByBarcode(productBarcode);
+            const product = await FoodNutritionService.getProductByBarcode(productBarcode, {
+                signal: request.signal
+            });
+            if (request.signal.aborted) return;
 
             // -------------------------------------------------
             // RENDERIZAR PRODUCTO
@@ -201,6 +206,8 @@ function initializeFoodNutrition() {
 
         } catch (error) {
 
+            if (request.signal.aborted) return;
+
             console.error("Error al cargar el producto:", error);
 
             const message = error instanceof Error
@@ -215,7 +222,7 @@ function initializeFoodNutrition() {
     // LOADING
     // =========================================================
 
-    function renderLoading() {
+    function renderLoading(message = "Cargando información del producto...") {
 
         productContainer.innerHTML = `
 
@@ -225,7 +232,7 @@ function initializeFoodNutrition() {
                 aria-live="polite"
             >
                 <p>
-                    Cargando información del producto...
+                    ${escapeHtml(message)}
                 </p>
 
             </div>

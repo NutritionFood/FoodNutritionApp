@@ -924,7 +924,13 @@ function initializeSearch() {
      * ==========================================
      */
 
+    let activeSearch;
+    document.addEventListener("astro:before-swap", () => activeSearch?.abort(), { once: true });
+
     async function executeSearch() {
+        activeSearch?.abort();
+        const request = new AbortController();
+        activeSearch = request;
 
         try {
 
@@ -944,8 +950,14 @@ function initializeSearch() {
                     state.brand,
                     state.nutritionGrade,
                     state.page,
-                    state.pageSize
+                    state.pageSize,
+                    {
+                        signal: request.signal
+                    }
                 );
+
+            if (request.signal.aborted || activeSearch !== request) return;
+            clearStatus();
 
 
             const products =
@@ -983,6 +995,7 @@ function initializeSearch() {
             });
 
         } catch (error) {
+            if (request.signal.aborted || activeSearch !== request) return;
 
             console.error(
                 "Error durante la búsqueda:",
