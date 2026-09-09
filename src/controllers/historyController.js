@@ -119,23 +119,8 @@ function initializeHistory() {
     clearHistoryButton?.addEventListener(
         "click",
         () => {
-
-            const confirmed =
-                window.confirm(
-                    "¿Vaciar todo el historial de productos visitados?"
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
             StorageService.clearHistory();
-
-
             renderHistory();
-
         }
     );
 
@@ -183,22 +168,6 @@ function initializeHistory() {
             if (!barcode) {
                 return;
             }
-
-
-            // -------------------------------------------------
-            // CONFIRMACIÓN
-            // -------------------------------------------------
-
-            const confirmed =
-                window.confirm(
-                    "¿Eliminar este producto del historial?"
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
 
             // -------------------------------------------------
             // ELEMENTO VISUAL

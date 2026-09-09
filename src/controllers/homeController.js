@@ -9,7 +9,7 @@ import { SearchComponent }
 // CONFIGURACIÓN
 // =========================================================
 
-const FEATURED_PRODUCTS_COUNT = 6;
+const FEATURED_PRODUCTS_COUNT = 3;
 
 
 // =========================================================
