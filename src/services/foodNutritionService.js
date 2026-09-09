@@ -10,6 +10,12 @@ export class FoodNutritionService {
 
     static RETRY_DELAY_MS = 1000;
 
+    static REQUEST_TIMEOUT_MS = 20000;
+
+    static FIRST_ATTEMPT_TIMEOUT_MS = 8000;
+
+    static TOTAL_TIMEOUT_MS = 65000;
+
 
     // =========================================================
     // CAMPOS UTILIZADOS EN EL LISTADO
@@ -65,7 +71,7 @@ export class FoodNutritionService {
     // OBTENER PRODUCTO POR CÓDIGO DE BARRAS
     // =========================================================
 
-    static async getProductByBarcode(barcode) {
+    static async getProductByBarcode(barcode, options = {}) {
 
         const cleanBarcode =
             String(barcode).trim();
@@ -110,7 +116,7 @@ export class FoodNutritionService {
         let data;
 
         try {
-            data = await this.requestWithRetry(url);
+            data = await this.requestWithRetry(url, options);
         } catch (error) {
             if (error?.status === 404) {
                 const notFoundError = new Error(
@@ -155,7 +161,8 @@ export class FoodNutritionService {
         brand = "",
         nutritionGrade = "",
         page = 1,
-        pageSize = 10
+        pageSize = 10,
+        options = {}
 
     ) {
 
@@ -244,9 +251,13 @@ export class FoodNutritionService {
         // REQUEST CON REINTENTOS
         // -----------------------------------------------------
 
-        return await this.requestWithRetry(
-            url
-        );
+        const data = await this.requestWithRetry(url, options);
+
+        if (!Array.isArray(data?.products)) {
+            throw new Error("La API devolvió una respuesta incompleta. Volvé a intentar la búsqueda.");
+        }
+
+        return data;
 
     }
 
@@ -255,166 +266,82 @@ export class FoodNutritionService {
     // REQUEST HTTP CON REINTENTOS
     // =========================================================
 
-    static async requestWithRetry(
-        url
-    ) {
-
+    static async requestWithRetry(url, { signal, onRetry } = {}) {
+        const deadline = Date.now() + this.TOTAL_TIMEOUT_MS;
         let lastError;
-
+        let retryAfterMs = 0;
 
         for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
+            signal?.throwIfAborted();
 
-            try {
-
-                if (attempt > 0) {
-
-                    const delay =
-                        this.RETRY_DELAY_MS *
-                        Math.pow(
-                            2,
-                            attempt - 1
-                        );
-
-
-                    await this.sleep(
-                        delay
-                    );
-
-                }
-
-
-                // -------------------------------------------------
-                // FETCH
-                // -------------------------------------------------
-
-                const response =
-                    await fetch(
-                        url,
-                        {
-                            method: "GET",
-
-                            headers: {
-                                "Accept":
-                                    "application/json"
-                            }
-                        }
-                    );
-
-
-                // -------------------------------------------------
-                // RESPUESTA EXITOSA
-                // -------------------------------------------------
-
-                if (response.ok) {
-
-                    return await this.parseJson(
-                        response
-                    );
-
-                }
-
-
-                // -------------------------------------------------
-                // ERROR HTTP
-                // -------------------------------------------------
-
-                const data =
-                    await this.tryParseJson(
-                        response
-                    );
-
-
-                const error =
-                    new Error(
-                        data?.message ??
-                        data?.Message ??
-                        `Error HTTP ${response.status}`
-                    );
-
-
-                error.status =
-                    response.status;
-
-
-                // -------------------------------------------------
-                // DETERMINAR SI SE PUEDE REINTENTAR
-                // -------------------------------------------------
-
-                if (
-                    !this.isRetryableStatus(
-                        response.status
-                    )
-                ) {
-
-                    throw error;
-
-                }
-
-
-                lastError =
-                    error;
-
-
-                console.warn(
-                    `Open Food Facts respondió HTTP ${response.status}. ` +
-                    `Reintento ${attempt + 1} de ${this.MAX_RETRIES}.`
+            if (attempt > 0) {
+                const delay = Math.max(
+                    this.RETRY_DELAY_MS * 2 ** (attempt - 1),
+                    retryAfterMs
                 );
-
-
-            } catch (error) {
-
-
-                // -------------------------------------------------
-                // ERRORES DE VALIDACIÓN / HTTP NO REINTENTABLES
-                // -------------------------------------------------
-
-                if (
-                    error?.status &&
-                    !this.isRetryableStatus(
-                        error.status
-                    )
-                ) {
-
-                    throw error;
-
-                }
-
-
-                // -------------------------------------------------
-                // ERROR DE RED / TIMEOUT
-                // -------------------------------------------------
-
-                lastError =
-                    error;
-
-
-                console.warn(
-                    `Error de conexión con Open Food Facts. ` +
-                    `Reintento ${attempt + 1} de ${this.MAX_RETRIES}.`,
-                    error
-                );
-
+                // No reintentar antes de Retry-After ni prolongar la espera indefinidamente.
+                if (Date.now() + delay >= deadline) break;
+                onRetry?.({ attempt, maxRetries: this.MAX_RETRIES, delay });
+                await this.sleep(delay, signal);
             }
 
+            const remaining = deadline - Date.now();
+            if (remaining <= 0) break;
+            const controller = new AbortController();
+            const cancel = () => controller.abort(signal.reason);
+            signal?.addEventListener("abort", cancel, { once: true });
+            const timer = setTimeout(
+                () => controller.abort(new DOMException("Tiempo de espera agotado", "TimeoutError")),
+                Math.min(
+                    attempt === 0 ? this.FIRST_ATTEMPT_TIMEOUT_MS : this.REQUEST_TIMEOUT_MS,
+                    this.REQUEST_TIMEOUT_MS,
+                    remaining
+                )
+            );
+            retryAfterMs = 0;
+
+            try {
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: { Accept: "application/json" },
+                    signal: controller.signal
+                });
+
+                if (!response.ok) {
+                    const error = new Error("El servicio no pudo completar la consulta. Volvé a intentarlo.");
+                    error.status = response.status;
+                    const retryAfter = response.headers.get("Retry-After");
+                    if (retryAfter) {
+                        const seconds = Number(retryAfter);
+                        retryAfterMs = Math.max(0, Number.isFinite(seconds)
+                            ? seconds * 1000
+                            : (Date.parse(retryAfter) || Date.now()) - Date.now());
+                    }
+                    // No esperar un cuerpo de error que también podría quedar pendiente.
+                    await response.body?.cancel();
+                    throw error;
+                }
+
+                // El timeout cubre también la descarga y lectura del cuerpo.
+                return await response.json();
+            } catch (error) {
+                signal?.throwIfAborted();
+                if (error?.status && !this.isRetryableStatus(error.status)) throw error;
+                lastError = controller.signal.aborted ? controller.signal.reason : error;
+            } finally {
+                clearTimeout(timer);
+                signal?.removeEventListener("abort", cancel);
+            }
         }
 
-
-        // =========================================================
-        // TODOS LOS INTENTOS FALLARON
-        // =========================================================
-
-        console.error(
-            "Open Food Facts no respondió correctamente después " +
-            "de todos los intentos.",
-            lastError
+        const error = new Error(
+            lastError?.status === 429
+                ? "El servicio recibió demasiadas consultas. Esperá un momento y volvé a buscar."
+                : "El servicio está tardando demasiado o no está disponible. Volvé a intentar en unos instantes.",
+            { cause: lastError }
         );
-
-
-        throw new Error(
-            "No se pudo obtener información de Open Food Facts. " +
-            "El servicio no está disponible en este momento."
-        );
-
+        error.status = lastError?.status;
+        throw error;
     }
 
 
@@ -489,18 +416,19 @@ export class FoodNutritionService {
     // ESPERA
     // =========================================================
 
-    static sleep(
-        milliseconds
-    ) {
-
-        return new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    milliseconds
-                )
-        );
-
+    static sleep(milliseconds, signal) {
+        return new Promise((resolve, reject) => {
+            signal?.throwIfAborted();
+            const cancel = () => {
+                clearTimeout(timer);
+                reject(signal.reason);
+            };
+            const timer = setTimeout(() => {
+                signal?.removeEventListener("abort", cancel);
+                resolve();
+            }, milliseconds);
+            signal?.addEventListener("abort", cancel, { once: true });
+        });
     }
 
 }
