@@ -139,7 +139,39 @@
 
     font-weight: 600;
 }
+.wishlist-priority {
 
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+
+}
+
+
+.wishlist-priority-stars {
+
+    font-size: 0.95rem;
+
+    letter-spacing: 1px;
+
+    color:
+        var(--color-accent);
+
+}
+
+
+.wishlist-priority-label {
+
+    font-size: 0.75rem;
+
+    font-weight: 500;
+
+    color:
+        var(--color-text-secondary);
+
+}
 .wishlist-preferences .wishlist-note {
     grid-column: 1 / -1;
 }

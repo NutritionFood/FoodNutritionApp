@@ -134,7 +134,13 @@ export class WishlistComponent {
 
                         <div>
                             <dt>Prioridad</dt>
-                            <dd>${this.escapeHtml(String(item.priority))}</dd>
+                            <dd>
+
+                                <span class="wishlist-priority">
+                                    ${this.renderPriority(item.priority)}
+                                </span>
+
+                            </dd>
                         </div>
 
                         <div>
@@ -187,7 +193,60 @@ export class WishlistComponent {
 
     }
 
+    // =========================================================
+    // RENDER PRIORIDAD
+    // =========================================================
 
+    renderPriority(priority) {
+
+        const value =
+            Number(priority);
+
+
+        if (
+            Number.isNaN(value) ||
+            value < 1 ||
+            value > 5
+        ) {
+
+            return "Sin prioridad";
+
+        }
+
+
+        const labels = {
+
+            1: "Muy baja",
+
+            2: "Baja",
+
+            3: "Media",
+
+            4: "Alta",
+
+            5: "Muy alta"
+
+        };
+
+
+        const stars =
+            "★".repeat(value) +
+            "☆".repeat(5 - value);
+
+
+        return `
+
+            <span class="wishlist-priority-stars">
+                ${stars}
+            </span>
+
+            <span class="wishlist-priority-label">
+                ${labels[value]}
+            </span>
+
+        `;
+
+    }
     // =========================================================
     // ESCAPAR HTML
     // =========================================================

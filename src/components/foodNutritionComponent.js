@@ -265,8 +265,7 @@ export class FoodNutritionComponent {
                     </h2>
 
                     <p class="wishlist-form-intro">
-                        Personalizá esta entrada con tus
-                        propias preferencias.
+                        Organizá este alimento según tus preferencias de consumo.
                     </p>
 
 
@@ -275,44 +274,53 @@ export class FoodNutritionComponent {
                         novalidate
                     >
 
-                        <div class="form-group">
-
-                            <label for="wishlist-priority">
-                                Prioridad
-                                (número mayor a 0)
-                            </label>
-
-                            <input
-                                type="number"
-                                id="wishlist-priority"
-                                name="priority"
-                                min="1"
-                                step="1"
-                                placeholder="Ej: 1"
-                            >
-
-                            <span
-                                class="field-error"
-                                id="error-priority"
-                            ></span>
-
-                        </div>
-
-
-                        <div class="form-group">
+                      <div class="form-group">
 
                             <label for="wishlist-category">
-                                Categoría o etiqueta
-                                personalizada
+                                ¿En qué momento del día lo querés consumir?
                             </label>
 
-                            <input
-                                type="text"
+                            <select
                                 id="wishlist-category"
                                 name="category"
-                                maxlength="40"
-                                placeholder="Ej: Desayuno saludable"
                             >
+                                <option value="">
+                                    Seleccioná un momento
+                                </option>
+
+                                <option value="Desayuno">
+                                    Desayuno
+                                </option>
+
+                                <option value="Media mañana">
+                                    Media mañana
+                                </option>
+
+                                <option value="Almuerzo">
+                                    Almuerzo
+                                </option>
+
+                                <option value="Merienda">
+                                    Merienda
+                                </option>
+
+                                <option value="Cena">
+                                    Cena
+                                </option>
+
+                                <option value="Colación">
+                                    Colación
+                                </option>
+
+                                <option value="Post-entrenamiento">
+                                    Post-entrenamiento
+                                </option>
+
+                                <option value="Otro">
+                                    Otro
+                                </option>
+
+                            </select>
 
                             <span
                                 class="field-error"
@@ -321,6 +329,55 @@ export class FoodNutritionComponent {
 
                         </div>
 
+
+                        <div class="form-group">
+
+                            <label for="wishlist-priority">
+                                ¿Qué prioridad tiene para vos?
+                            </label>
+
+                            <select
+                                id="wishlist-priority"
+                                name="priority"
+                            >
+
+                                <option value="">
+                                    Seleccioná una prioridad
+                                </option>
+
+                                <option value="1">
+                                    1 — Muy baja
+                                </option>
+
+                                <option value="2">
+                                    2 — Baja
+                                </option>
+
+                                <option value="3">
+                                    3 — Media
+                                </option>
+
+                                <option value="4">
+                                    4 — Alta
+                                </option>
+
+                                <option value="5">
+                                    5 — Muy alta
+                                </option>
+
+                            </select>
+
+                            <small class="wishlist-field-help">
+                                La prioridad te permite ordenar tus alimentos
+                                según el interés que tenés en incorporarlos.
+                            </small>
+
+                            <span
+                                class="field-error"
+                                id="error-priority"
+                            ></span>
+
+                        </div>
 
                         <div class="form-group">
 
