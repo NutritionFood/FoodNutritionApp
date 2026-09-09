@@ -189,73 +189,107 @@ export class StorageService {
     // (queda como "más reciente").
     // =========================================================
 
-    static registerVisit(product) {
+   static registerVisit(product) {
 
-        const barcode =
-            product?.code;
-
-
-        if (!barcode) {
-            return;
-        }
+    const barcode =
+        product?.code;
 
 
-        const history =
-            this.getHistory()
-                .filter(
-                    item => item.barcode !== barcode
-                );
+    if (!barcode) {
+        return;
+    }
 
 
-        const item = {
-
-            barcode,
-
-            name:
-                product.product_name_es ||
-                product.product_name ||
-                "Producto sin nombre",
-
-            brand:
-                product.brands ||
-                "Marca no disponible",
-
-            image:
-                product.selected_images?.front?.display?.es ||
-                product.image_front_url ||
-                null,
-
-            nutritionGrade:
-                product.nutriscore_grade ||
-                product.nutrition_grade_fr ||
-                null,
-
-            visitedAt:
-                new Date().toISOString()
-
-        };
-
-
-        history.unshift(item);
-
-
-        // -------------------------------------------------
-        // LIMITAR TAMAÑO DEL HISTORIAL
-        // -------------------------------------------------
-
-        const trimmedHistory =
-            history.slice(
-                0,
-                this.HISTORY_MAX_ITEMS
+    const history =
+        this.getHistory()
+            .filter(
+                item =>
+                    item.barcode !== barcode
             );
 
 
-        this.writeList(
-            this.HISTORY_KEY,
-            trimmedHistory
+    // =====================================================
+    // CATEGORÍAS
+    // =====================================================
+    //
+    // Open Food Facts puede devolver categories_tags
+    // como un array:
+    //
+    // [
+    //     "en:dairies",
+    //     "en:yogurts",
+    //     "en:fermented-foods"
+    // ]
+    //
+    // Las guardamos para poder utilizar el historial
+    // posteriormente en las recomendaciones.
+    // =====================================================
+
+    const categoriesTags =
+        Array.isArray(
+            product.categories_tags
+        )
+            ? product.categories_tags
+            : [];
+
+
+    const item = {
+
+        barcode,
+
+        name:
+            product.product_name_es ||
+            product.product_name ||
+            "Producto sin nombre",
+
+        brand:
+            product.brands ||
+            "Marca no disponible",
+
+        image:
+            product.selected_images?.front?.display?.es ||
+            product.image_front_url ||
+            null,
+
+        nutritionGrade:
+            product.nutriscore_grade ||
+            product.nutrition_grade_fr ||
+            null,
+
+        categories:
+            product.categories ||
+            "",
+
+        categoriesTags,
+
+        visitedAt:
+            new Date().toISOString()
+
+    };
+
+
+    history.unshift(
+        item
+    );
+
+
+    // =====================================================
+    // LIMITAR TAMAÑO DEL HISTORIAL
+    // =====================================================
+
+    const trimmedHistory =
+        history.slice(
+            0,
+            this.HISTORY_MAX_ITEMS
         );
 
-    }
+
+    this.writeList(
+        this.HISTORY_KEY,
+        trimmedHistory
+    );
+
+}
     // =========================================================
     // ELIMINAR UNA VISITA
     // =========================================================

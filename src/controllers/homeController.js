@@ -1,5 +1,5 @@
-import { FoodNutritionService }
-    from "../services/foodNutritionService.js";
+import { RecommendationService }
+    from "../services/recommendationService.js";
 
 import { SearchComponent }
     from "../components/searchComponent.js";
@@ -21,6 +21,7 @@ document.addEventListener(
     initializeHome
 );
 
+
 function initializeHome() {
 
     // =========================================================
@@ -31,6 +32,7 @@ function initializeHome() {
         document.querySelector(
             "#featured-container"
         );
+
 
     const featuredStatus =
         document.querySelector(
@@ -49,7 +51,7 @@ function initializeHome() {
 
 
     // =========================================================
-    // COMPONENT (reutilizado de la vista de búsqueda)
+    // COMPONENT
     // =========================================================
 
     const featuredComponent =
@@ -65,33 +67,53 @@ function initializeHome() {
     loadFeaturedProducts();
 
 
+    // =========================================================
+    // OBTENER RECOMENDACIONES
+    // =========================================================
+
     async function loadFeaturedProducts() {
 
         try {
 
+            // -------------------------------------------------
+            // LOADING
+            // -------------------------------------------------
+
             featuredComponent.renderLoading();
 
 
-            const data =
-                await FoodNutritionService
-                    .searchProducts(
-                        "",
-                        "",
-                        "",
-                        1,
+            // -------------------------------------------------
+            // OBTENER PRODUCTOS
+            // -------------------------------------------------
+
+            const products =
+                await RecommendationService
+                    .getFeaturedProducts(
                         FEATURED_PRODUCTS_COUNT
                     );
 
 
-            const products =
-                Array.isArray(data?.products)
-                    ? data.products
-                    : [];
-
+            // -------------------------------------------------
+            // RENDERIZAR RESULTADOS
+            // -------------------------------------------------
 
             featuredComponent.renderResults(
                 products
             );
+
+
+            // -------------------------------------------------
+            // LIMPIAR ESTADO
+            // -------------------------------------------------
+
+            if (
+                featuredStatus
+            ) {
+
+                featuredStatus.innerHTML =
+                    "";
+
+            }
 
         } catch (error) {
 
@@ -107,19 +129,65 @@ function initializeHome() {
                     : "No fue posible cargar productos destacados.";
 
 
-            if (featuredStatus) {
+            if (
+                featuredStatus
+            ) {
 
                 featuredStatus.innerHTML = `
-                    <p class="featured-error">
-                        ${message}
+
+                    <p
+                        class="featured-error"
+                    >
+                        ${escapeHtml(message)}
                     </p>
+
                 `;
 
             }
 
-            featuredContainer.innerHTML = "";
+
+            featuredContainer.innerHTML =
+                "";
 
         }
+
+    }
+
+
+    // =========================================================
+    // ESCAPAR HTML
+    // =========================================================
+
+    function escapeHtml(
+        value
+    ) {
+
+        return String(value)
+
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
 
     }
 
