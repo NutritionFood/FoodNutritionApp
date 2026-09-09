@@ -329,6 +329,20 @@
     margin-bottom: 15px;
 }
 
+.wishlist-field-help {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color:
+        var(--color-text-secondary);
+
+    font-size: 0.75rem;
+
+    line-height: 1.4;
+}
+
 .wishlist-form-section .form-group {
 
     display: flex;
@@ -347,6 +361,7 @@
 }
 
 .wishlist-form-section input,
+.wishlist-form-section select,
 .wishlist-form-section textarea {
 
     width: 100%;

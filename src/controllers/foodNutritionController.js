@@ -113,52 +113,81 @@ function initializeFoodNutrition() {
         }
     );
 
-    function validateWishlistForm({priority, category, note}) {
+    function validateWishlistForm({ priority, category, note }) {
 
         const errors = {};
 
         // -------------------------------------------------
-        // PRIORIDAD: requerido, numérico, mayor a 0
+        // PRIORIDAD
+        // Requerida, numérica y mayor a 0
         // -------------------------------------------------
 
-        const priorityNumber = Number(priority);
+        const priorityNumber =
+            Number(priority);
 
-        if (priority === null || priority === undefined || String(priority).trim() === "") {
 
-            errors.priority = "Ingresá una prioridad.";
+        if (
+            priority === null ||
+            priority === undefined ||
+            String(priority).trim() === ""
+        ) {
 
-        } else if (Number.isNaN(priorityNumber) || priorityNumber <= 0) {
+            errors.priority =
+                "Seleccioná una prioridad.";
 
-            errors.priority = "La prioridad debe ser un número mayor a 0.";
+        } else if (
+            Number.isNaN(priorityNumber) ||
+            priorityNumber <= 0
+        ) {
+
+            errors.priority =
+                "La prioridad debe ser un número mayor a 0.";
+
+        } else if (
+            priorityNumber > 5
+        ) {
+
+            errors.priority =
+                "La prioridad debe estar entre 1 y 5.";
+
         }
 
+
         // -------------------------------------------------
-        // CATEGORÍA: requerido
+        // CATEGORÍA
+        // Requerida
         // -------------------------------------------------
 
-        if (!category || !category.trim()) {
+        if (
+            !category ||
+            !category.trim()
+        ) {
 
-            errors.category = "Ingresá una categoría o etiqueta.";
-
-        } else if (category.trim().length > 40) {
-
-            errors.category = "La categoría no puede superar los 40 caracteres.";
+            errors.category =
+                "Seleccioná un momento del día.";
 
         }
 
+
         // -------------------------------------------------
-        // NOTA: opcional, con límite de caracteres
+        // NOTA
+        // Opcional, máximo 200 caracteres
         // -------------------------------------------------
 
-        if (note && note.trim().length > 200) {
+        if (
+            note &&
+            note.trim().length > 200
+        ) {
 
-            errors.note = "La nota no puede superar los 200 caracteres.";
+            errors.note =
+                "La nota no puede superar los 200 caracteres.";
+
         }
+
 
         return errors;
 
     }
-
     // =========================================================
     // CARGAR PRODUCTO DESDE LA API
     // =========================================================
