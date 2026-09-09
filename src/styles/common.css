@@ -599,3 +599,9 @@ img {
         scroll-behavior: auto !important;
     }
 }
+/* Mobile */
+@media (max-width: 480px) {
+    .header-brand p {
+        display: none;
+    }
+}
