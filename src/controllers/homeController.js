@@ -6,7 +6,7 @@ import { SearchComponent }
 
 
 // =========================================================
-// CONFIGURACIÓN
+// CONFIGURACIÓN IMAGENES DE INICIO 
 // =========================================================
 
 const FEATURED_PRODUCTS_COUNT = 3;

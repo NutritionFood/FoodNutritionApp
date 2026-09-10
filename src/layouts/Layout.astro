@@ -19,6 +19,16 @@ import { ClientRouter } from "astro:transitions";
         name="description"
         content={Astro.props.description ?? "Información nutricional de productos alimenticios"}
     >
+    
+
+    <!-- Configuración PWA -->
+    <link rel="manifest" href="/manifest.json">
+
+    <meta
+    name="theme-color"
+    content="#176B4D"
+    >
+    
 
     <title>{Astro.props.title ?? "Food Nutrition"}</title>
 
@@ -71,6 +81,10 @@ import { ClientRouter } from "astro:transitions";
             initNav
         );
     </script>
+    
+
+<!-- Inicialización PWA -->
+    <script is:inline src="/js/pwa-init.js"></script>
 
 </body>
 
