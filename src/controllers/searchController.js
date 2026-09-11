@@ -10,7 +10,11 @@ document.addEventListener(
 
 function initializeSearch() {
 
+    const searchPage = document.querySelector("#filters-form");
 
+    if (!searchPage) {
+        return;
+    }
     /*
      * ==========================================
      * ELEMENTOS DEL DOM
@@ -995,29 +999,24 @@ function initializeSearch() {
             });
 
         } catch (error) {
-            if (request.signal.aborted || activeSearch !== request) return;
+
+            if (
+                request.signal.aborted ||
+                activeSearch !== request
+            ) {
+                return;
+            }
 
             console.error(
                 "Error durante la búsqueda:",
                 error
             );
 
-
-            const message =
-                error instanceof Error
-                    ? error.message
-                    : "Ocurrió un error inesperado durante la búsqueda.";
-
-
-            searchComponent.renderError(
-                message
-            );
-
-
             showStatus(
-                message,
+                "No pudimos cargar los productos.",
                 "error"
             );
+
         }
     }
 

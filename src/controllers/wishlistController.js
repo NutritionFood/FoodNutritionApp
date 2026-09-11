@@ -33,10 +33,6 @@ function initializeWishlist() {
 
     if (!wishlistContainer) {
 
-        console.error(
-            "No se encontró #wishlist-container."
-        );
-
         return;
     }
 
