@@ -6,7 +6,7 @@ export class FoodNutritionService {
     // CONFIGURACIÓN DE REINTENTOS
     // =========================================================
 
-    static MAX_RETRIES = 3;
+    static MAX_RETRIES = 5;
 
     static RETRY_DELAY_MS = 1000;
 
@@ -254,7 +254,7 @@ export class FoodNutritionService {
         const data = await this.requestWithRetry(url, options);
 
         if (!Array.isArray(data?.products)) {
-            throw new Error("La API devolvió una respuesta incompleta. Volvé a intentar la búsqueda.");
+            throw new Error("No se pudieron cargar los productos.");
         }
 
         return data;

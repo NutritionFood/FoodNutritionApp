@@ -1,12 +1,12 @@
-import { RecommendationService }
-    from "../services/recommendationService.js";
+import { FoodNutritionService }
+    from "../services/foodNutritionService.js";
 
 import { SearchComponent }
     from "../components/searchComponent.js";
 
 
 // =========================================================
-// CONFIGURACIÓN IMAGENES DE INICIO 
+// CONFIGURACIÓN IMAGENES DE INICIO
 // =========================================================
 
 const FEATURED_PRODUCTS_COUNT = 3;
@@ -33,7 +33,6 @@ function initializeHome() {
             "#featured-container"
         );
 
-
     const featuredStatus =
         document.querySelector(
             "#featured-status"
@@ -41,11 +40,6 @@ function initializeHome() {
 
 
     if (!featuredContainer) {
-
-        console.error(
-            "No se encontró #featured-container."
-        );
-
         return;
     }
 
@@ -68,7 +62,7 @@ function initializeHome() {
 
 
     // =========================================================
-    // OBTENER RECOMENDACIONES
+    // OBTENER PRODUCTOS
     // =========================================================
 
     async function loadFeaturedProducts() {
@@ -83,14 +77,19 @@ function initializeHome() {
 
 
             // -------------------------------------------------
-            // OBTENER PRODUCTOS
+            // OBTENER PRODUCTOS DE ARGENTINA
             // -------------------------------------------------
 
-            const products =
-                await RecommendationService
-                    .getFeaturedProducts(
-                        FEATURED_PRODUCTS_COUNT
-                    );
+            const data =
+                await FoodNutritionService.searchProducts(
+                    "",
+                    "",
+                    "",
+                    1,
+                    FEATURED_PRODUCTS_COUNT
+                );
+
+            const products = data.products;
 
 
             // -------------------------------------------------
@@ -106,14 +105,12 @@ function initializeHome() {
             // LIMPIAR ESTADO
             // -------------------------------------------------
 
-            if (
-                featuredStatus
-            ) {
+            if (featuredStatus) {
 
-                featuredStatus.innerHTML =
-                    "";
+                featuredStatus.innerHTML = "";
 
             }
+
 
         } catch (error) {
 
@@ -129,9 +126,7 @@ function initializeHome() {
                     : "No fue posible cargar productos destacados.";
 
 
-            if (
-                featuredStatus
-            ) {
+            if (featuredStatus) {
 
                 featuredStatus.innerHTML = `
 
@@ -146,8 +141,7 @@ function initializeHome() {
             }
 
 
-            featuredContainer.innerHTML =
-                "";
+            featuredContainer.innerHTML = "";
 
         }
 

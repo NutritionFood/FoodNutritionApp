@@ -24,8 +24,6 @@ function initializeFoodNutrition() {
 
     if (!productContainer) {
 
-        console.error("No se encontró #product-container.");
-
         return;
     }
 

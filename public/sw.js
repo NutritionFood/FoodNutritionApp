@@ -1,6 +1,6 @@
 const CACHE_NAME = 'food-nutrition-v1';
 
-const RECURSOS_SHELL = [
+const SHELL = [
   '/',
   '/search',
   '/foodNutrition',
@@ -22,7 +22,7 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('[SW] Cacheando recursos del shell');
-        return cache.addAll(RECURSOS_SHELL);
+        return cache.addAll(SHELL);
       })
       .then(() => self.skipWaiting())
   );

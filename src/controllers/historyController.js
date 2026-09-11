@@ -39,11 +39,6 @@ function initializeHistory() {
 
 
     if (!historyContainer) {
-
-        console.error(
-            "No se encontró #history-container."
-        );
-
         return;
     }
 
