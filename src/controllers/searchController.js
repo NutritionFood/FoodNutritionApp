@@ -2,94 +2,38 @@ import { FoodNutritionService } from "../services/foodNutritionService.js";
 import { BarcodeScannerService } from "../services/barcodeScannerService.js";
 import { SearchComponent } from "../components/searchComponent.js";
 
-document.addEventListener(
-    "astro:page-load",
-    initializeSearch
-);
-
+document.addEventListener("astro:page-load", initializeSearch);
 
 function initializeSearch() {
 
-    const searchPage = document.querySelector("#filters-form");
-
-    if (!searchPage) {
-        return;
-    }
     /*
      * ==========================================
      * ELEMENTOS DEL DOM
      * ==========================================
      */
-
-    const barcodeForm =
-        document.querySelector("#barcode-form");
-
-    const filtersForm =
-        document.querySelector("#filters-form");
-
-    const barcodeInput =
-        document.querySelector("#barcode");
-
-    const barcodeMethodInputs =
-        document.querySelectorAll(
-            'input[name="barcode-method"]'
-        );
-
-    const categoryInput =
-        document.querySelector("#category");
-
-    const brandInput =
-        document.querySelector("#brand");
-
-    const nutritionGradeInput =
-        document.querySelector("#nutrition-grade");
-
-    const resultsContainer =
-        document.querySelector("#results-container");
-
-    const resultsCount =
-        document.querySelector("#results-count");
-
-    const searchStatus =
-        document.querySelector("#search-status");
-
-    const pagination =
-        document.querySelector("#pagination");
-
-    const resultsSection =
-        document.querySelector("#results-section");
-
-    const cameraSearch =
-        document.querySelector("#camera-search");
-
-    const cameraStatus =
-        document.querySelector("#camera-status");
-
-    const cameraContainer =
-        document.querySelector("#camera-container");
-
-    const barcodeVideo =
-        document.querySelector("#barcode-video");
-
-    const scanBarcodeButton =
-        document.querySelector("#scan-barcode-button");
-
-    const stopCameraButton =
-        document.querySelector("#stop-camera-button");
-
+    const barcodeForm = document.querySelector("#barcode-form");
+    const filtersForm = document.querySelector("#filters-form");
+    const barcodeInput = document.querySelector("#barcode");
+    const barcodeMethodInputs = document.querySelectorAll('input[name="barcode-method"]');
+    const categoryInput = document.querySelector("#category");
+    const brandInput = document.querySelector("#brand");
+    const nutritionGradeInput = document.querySelector("#nutrition-grade");
+    const resultsContainer = document.querySelector("#results-container");
+    const resultsCount = document.querySelector("#results-count");
+    const searchStatus = document.querySelector("#search-status");
+    const pagination = document.querySelector("#pagination");
+    const resultsSection = document.querySelector("#results-section");
+    const cameraSearch = document.querySelector("#camera-search");
+    const cameraStatus = document.querySelector("#camera-status");
+    const cameraContainer = document.querySelector("#camera-container");
+    const barcodeVideo = document.querySelector("#barcode-video");
+    const scanBarcodeButton = document.querySelector("#scan-barcode-button");
+    const stopCameraButton = document.querySelector("#stop-camera-button");
     /*
      * Botón opcional para volver al
      * ingreso manual.
      */
-    const useManualButton =
-        document.querySelector("#use-manual-button");
-
-
-    /*
-     * ==========================================
-     * VALIDACIÓN DE ELEMENTOS
-     * ==========================================
-     */
+    const useManualButton = document.querySelector("#use-manual-button");
 
     if (
         !barcodeForm ||
@@ -111,21 +55,14 @@ function initializeSearch() {
         !scanBarcodeButton ||
         !stopCameraButton
     ) {
-
-        console.error(
-            "No se pudieron obtener todos los elementos necesarios."
-        );
-
+        console.error("No se pudieron obtener todos los elementos necesarios.");
         return;
     }
-
-
     /*
      * ==========================================
      * SERVICIOS
      * ==========================================
      */
-
     const searchComponent =
         new SearchComponent(
             resultsContainer
@@ -240,8 +177,6 @@ function initializeSearch() {
 
             stopCamera();
 
-            hideCameraHelp();
-
             hideManualFallbackHighlight();
 
             const manualInput =
@@ -316,8 +251,6 @@ function initializeSearch() {
 
                     stopCamera();
 
-                    hideCameraHelp();
-
                     hideManualFallbackHighlight();
 
                     barcodeForm.hidden =
@@ -360,8 +293,6 @@ function initializeSearch() {
 
             stopCamera();
 
-            hideCameraHelp();
-
             cameraStatus.textContent =
                 'Cámara detenida. Presioná "Iniciar cámara" para volver a escanear.';
         }
@@ -377,8 +308,6 @@ function initializeSearch() {
     async function startCamera() {
 
         clearStatus();
-
-        hideCameraHelp();
 
         hideManualFallbackHighlight();
 
@@ -545,8 +474,6 @@ function initializeSearch() {
 
         clearCameraHelpTimer();
 
-        hideCameraHelp();
-
         hideManualFallbackHighlight();
 
 
@@ -658,38 +585,6 @@ function initializeSearch() {
 
 
         cameraHelpTimer = null;
-    }
-
-
-    /*
-     * ==========================================
-     * OCULTAR AYUDA
-     * ==========================================
-     */
-
-    function hideCameraHelp() {
-
-        /*
-         * La ayuda está integrada al
-         * mensaje de cameraStatus, por lo
-         * que restauramos el estado normal
-         * solamente cuando sea necesario.
-         */
-
-        if (
-            state.barcodeDetected
-        ) {
-
-            return;
-        }
-
-
-        if (
-            cameraContainer.hidden
-        ) {
-
-            return;
-        }
     }
 
 
@@ -1012,11 +907,15 @@ function initializeSearch() {
                 error
             );
 
-            showStatus(
-                "No pudimos cargar los productos.",
-                "error"
-            );
+            // Elimina el spinner "Buscando productos..."
+            clearResults();
 
+            // Oculta la paginación por si había resultados anteriores
+            hidePagination();
+
+            showRetryStatus(
+                "No pudimos cargar los productos. Intentá nuevamente."
+            );
         }
     }
 
@@ -1243,8 +1142,6 @@ window.addEventListener(
          * Limpiar estados visuales de la cámara.
          */
         clearStatus();
-
-        hideCameraHelp();
 
         hideManualFallbackHighlight();
 

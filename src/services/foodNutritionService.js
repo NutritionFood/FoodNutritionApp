@@ -2,27 +2,16 @@ import { API } from "../config/urls.js";
 
 export class FoodNutritionService {
 
-    // =========================================================
-    // CONFIGURACIÓN DE REINTENTOS
-    // =========================================================
+    // 3 reintentos + 1 intento inicial 
+    static MAX_RETRIES = 3;
 
-    static MAX_RETRIES = 5;
+    // Espera corta entre solicitudes
+    static RETRY_DELAY_MS = 400;
 
-    static RETRY_DELAY_MS = 1000;
-
-    static REQUEST_TIMEOUT_MS = 20000;
-
-    static FIRST_ATTEMPT_TIMEOUT_MS = 8000;
-
-    static TOTAL_TIMEOUT_MS = 65000;
-
-
-    // =========================================================
-    // CAMPOS UTILIZADOS EN EL LISTADO
-    // =========================================================
+    // Tiempo máximo permitido para cada solicitud individual
+    static REQUEST_TIMEOUT_MS = 5000;
 
     static SEARCH_FIELDS = [
-
         "code",
         "product_name",
         "product_name_es",
@@ -33,16 +22,9 @@ export class FoodNutritionService {
         "nutrition_grades",
         "image_front_url",
         "nutriments"
-
     ].join(",");
 
-
-    // =========================================================
-    // CAMPOS UTILIZADOS EN EL DETALLE
-    // =========================================================
-
     static PRODUCT_FIELDS = [
-
         "code",
         "product_name",
         "product_name_es",
@@ -63,372 +45,385 @@ export class FoodNutritionService {
         "image_url",
         "serving_quantity",
         "serving_quantity_unit"
-
     ].join(",");
+    /*
+     * =========================================================
+     * OBTENER PRODUCTO POR CÓDIGO DE BARRAS
+     * =========================================================
+     */
+    static async getProductByBarcode(barcode,options = {}) {
 
+        const normalizedBarcode =
+            String(barcode ?? "").trim();
 
-    // =========================================================
-    // OBTENER PRODUCTO POR CÓDIGO DE BARRAS
-    // =========================================================
+        if (!/^\d{8,14}$/.test(normalizedBarcode)) {
 
-    static async getProductByBarcode(barcode, options = {}) {
-
-        const cleanBarcode =
-            String(barcode).trim();
-
-
-        // -----------------------------------------------------
-        // VALIDACIÓN
-        // -----------------------------------------------------
-
-        if (!/^\d{8,14}$/.test(cleanBarcode)) {
-
-            throw new Error(
-                "El código de barras debe contener entre 8 y 14 números."
-            );
-
+            throw new Error("El código de barras debe contener entre 8 y 14 números.");
         }
 
-
-        // -----------------------------------------------------
-        // PARÁMETROS
-        // -----------------------------------------------------
-
-        const params =
-            new URLSearchParams({
-
-                fields:
-                    this.PRODUCT_FIELDS
-
-            });
-
-
         const url =
-            `${API.OPEN_FOOD_FACTS}/product/${encodeURIComponent(
-                cleanBarcode
-            )}?${params.toString()}`;
-
-
-        // -----------------------------------------------------
-        // REQUEST CON REINTENTOS
-        // -----------------------------------------------------
-
-        let data;
+            `${API.OPEN_FOOD_FACTS}/product/` +
+            `${encodeURIComponent(normalizedBarcode)}` +
+            `?fields=${this.PRODUCT_FIELDS}`;
 
         try {
-            data = await this.requestWithRetry(url, options);
+
+            const data = await this.requestWithRetry(url, options);
+            /*
+             * Puede devolver HTTP 200
+             * pero indicar que el producto no existe
+             */
+            if (data?.status !== 1 || !data?.product) {
+
+                throw new Error("No se encontró un producto asociado a ese código de barras.");
+            }
+
+            return data.product;
+
         } catch (error) {
-            if (error?.status === 404) {
-                const notFoundError = new Error(
-                    "Producto no encontrado. No hay un producto registrado con ese código de barras."
-                );
-                notFoundError.status = 404;
-                throw notFoundError;
+
+            if (
+                error?.status === 404
+            ) {
+
+                throw new Error("No se encontró un producto asociado a ese código de barras.");
             }
 
             throw error;
         }
-
-
-        // -----------------------------------------------------
-        // PRODUCTO NO ENCONTRADO
-        // -----------------------------------------------------
-
-        if (
-            data.status !== 1 ||
-            !data.product
-        ) {
-
-            throw new Error(
-                "Producto no encontrado. No hay un producto registrado con ese código de barras."
-            );
-
-        }
-
-
-        return data.product;
-
     }
-
-
-    // =========================================================
-    // BUSCAR PRODUCTOS CON FILTROS
-    // =========================================================
-
+    /*
+     * =========================================================
+     * OBTENER PRODUCTO POR FILTROS
+     * =========================================================
+     */
     static async searchProducts(
-
         category = "",
         brand = "",
         nutritionGrade = "",
         page = 1,
         pageSize = 10,
         options = {}
-
     ) {
 
+        const params = new URLSearchParams();
 
-        const params =
-            new URLSearchParams();
-            params.set("countries_tags_en", "argentina");
+        /*
+         * País de búsqueda
+         */
+        params.set("countries_tags_en", "argentina");
 
-        // -----------------------------------------------------
-        // CATEGORÍA
-        // -----------------------------------------------------
-
+        /*
+         * Filtro por categoría
+         */
         if (category) {
 
-            params.set(
-                "categories_tags_en",
-                category
-            );
-
+            params.set("categories_tags_en", category);
         }
 
-
-        // -----------------------------------------------------
-        // MARCA
-        // -----------------------------------------------------
-
+        /*
+         * Filtro por marca
+         */
         if (brand) {
 
-            params.set(
-                "brands_tags",
-                brand
-            );
-
+            params.set("brands_tags", brand);
         }
 
-
-        // -----------------------------------------------------
-        // NUTRI-SCORE
-        // -----------------------------------------------------
-
+        /*
+         * Filtro por Nutri-Score
+         */
         if (nutritionGrade) {
 
-            params.set(
-                "nutrition_grades_tags",
-                nutritionGrade
+            params.set("nutrition_grades_tags", nutritionGrade);
+        }
+
+        /*
+         * Campos solicitados
+         */
+        params.set("fields", this.SEARCH_FIELDS);
+
+        /*
+         * Paginación
+         */
+        params.set("page", page);
+
+        params.set("page_size", pageSize);
+
+        const url =`${API.OPEN_FOOD_FACTS}/search?${params.toString()}`;
+
+        const data =await this.requestWithRetry(url, options);
+
+        /*
+         * Validación de la respuesta
+         */
+        if (!Array.isArray( data?.products)
+        ) {
+            throw new Error(
+                "La respuesta de Open Food Facts " +
+                "no contiene una lista válida de productos."
             );
-
         }
-
-
-        // -----------------------------------------------------
-        // CAMPOS
-        // -----------------------------------------------------
-
-        params.set(
-            "fields",
-            this.SEARCH_FIELDS
-        );
-
-
-        // -----------------------------------------------------
-        // PAGINACIÓN
-        // -----------------------------------------------------
-
-        params.set(
-            "page",
-            String(page)
-        );
-
-
-        params.set(
-            "page_size",
-            String(pageSize)
-        );
-
-
-        // -----------------------------------------------------
-        // URL
-        // -----------------------------------------------------
-
-        const url =
-            `${API.OPEN_FOOD_FACTS}/search?${params.toString()}`;
-
-
-        // -----------------------------------------------------
-        // REQUEST CON REINTENTOS
-        // -----------------------------------------------------
-
-        const data = await this.requestWithRetry(url, options);
-
-        if (!Array.isArray(data?.products)) {
-            throw new Error("No se pudieron cargar los productos.");
-        }
-
         return data;
-
     }
 
+    /*
+     * =========================================================
+     * REQUEST CON REINTENTOS
+     * =========================================================
+     */
 
-    // =========================================================
-    // REQUEST HTTP CON REINTENTOS
-    // =========================================================
+    static async requestWithRetry(url,{signal, onRetry} = {}
+    ) {
 
-    static async requestWithRetry(url, { signal, onRetry } = {}) {
-        const deadline = Date.now() + this.TOTAL_TIMEOUT_MS;
-        let lastError;
-        let retryAfterMs = 0;
-
+        let lastError = null;
+    
         for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
-            signal?.throwIfAborted();
 
-            if (attempt > 0) {
-                const delay = Math.max(
-                    this.RETRY_DELAY_MS * 2 ** (attempt - 1),
-                    retryAfterMs
+            /*
+             * Si el controller canceló la consulta,
+             * no continuamos con los reintentos.
+             */
+            if ( signal?.aborted) {
+
+                throw new DOMException(
+                    "La solicitud fue cancelada.",
+                    "AbortError"
                 );
-                // No reintentar antes de Retry-After ni prolongar la espera indefinidamente.
-                if (Date.now() + delay >= deadline) break;
-                onRetry?.({ attempt, maxRetries: this.MAX_RETRIES, delay });
-                await this.sleep(delay, signal);
             }
 
-            const remaining = deadline - Date.now();
-            if (remaining <= 0) break;
+            if ( attempt > 0) {
+
+                await this.sleep(this.RETRY_DELAY_MS, signal);
+            }
+
             const controller = new AbortController();
-            const cancel = () => controller.abort(signal.reason);
-            signal?.addEventListener("abort", cancel, { once: true });
-            const timer = setTimeout(
-                () => controller.abort(new DOMException("Tiempo de espera agotado", "TimeoutError")),
-                Math.min(
-                    attempt === 0 ? this.FIRST_ATTEMPT_TIMEOUT_MS : this.REQUEST_TIMEOUT_MS,
-                    this.REQUEST_TIMEOUT_MS,
-                    remaining
-                )
-            );
-            retryAfterMs = 0;
+
+            const timeoutId = setTimeout(() => {
+
+                        controller.abort();
+                    },
+                    this.REQUEST_TIMEOUT_MS
+                );
+
+            const abortHandler =() => {
+
+                    controller.abort();
+                };
+
+            signal?.addEventListener("abort", abortHandler,{once: true});
 
             try {
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: { Accept: "application/json" },
-                    signal: controller.signal
-                });
 
-                if (!response.ok) {
-                    const error = new Error("El servicio no pudo completar la consulta. Volvé a intentarlo.");
-                    error.status = response.status;
-                    const retryAfter = response.headers.get("Retry-After");
-                    if (retryAfter) {
-                        const seconds = Number(retryAfter);
-                        retryAfterMs = Math.max(0, Number.isFinite(seconds)
-                            ? seconds * 1000
-                            : (Date.parse(retryAfter) || Date.now()) - Date.now());
-                    }
-                    // No esperar un cuerpo de error que también podría quedar pendiente.
-                    await response.body?.cancel();
+                const response = await fetch(url,
+                        {
+                            method: "GET",
+                            headers: {
+                                Accept: "application/json"
+                            },
+                            signal: controller.signal
+                        }
+                    );
+
+                /*
+                 * La solicitud terminó.
+                 * Eliminamos el timeout.
+                 */
+                clearTimeout(timeoutId);
+
+                signal?.removeEventListener("abort", abortHandler);
+
+                if (response.ok) {
+
+                    return await response.json();
+                }
+
+                const error =new Error(`Error HTTP ${response.status}`);
+
+                error.status = response.status;
+
+                const retryAfter = response.headers.get("Retry-After");
+
+                if ( retryAfter) {
+
+                    error.retryAfter =this.getRetryAfterMilliseconds(retryAfter);
+                }
+
+                if ( !this.isRetryableStatus(response.status)) {
+
                     throw error;
                 }
 
-                // El timeout cubre también la descarga y lectura del cuerpo.
-                return await response.json();
+                lastError = error;
+
+                if (attempt < this.MAX_RETRIES) {
+
+                    onRetry?.({
+                        attempt: attempt + 1,
+                        maxRetries: this.MAX_RETRIES,
+                        error
+                    });
+
+                    console.warn(
+                        "Open Food Facts respondió " +
+                        `${response.status}. ` +
+                        `Reintento ${attempt + 1}/` +
+                        `${this.MAX_RETRIES}.`
+                    );
+                    continue;
+                }
+
+                throw error;
+
             } catch (error) {
-                signal?.throwIfAborted();
-                if (error?.status && !this.isRetryableStatus(error.status)) throw error;
-                lastError = controller.signal.aborted ? controller.signal.reason : error;
-            } finally {
-                clearTimeout(timer);
-                signal?.removeEventListener("abort", cancel);
+
+                clearTimeout(timeoutId);
+
+                signal?.removeEventListener("abort", abortHandler);
+
+                if (signal?.aborted) {
+
+                    throw new DOMException(
+                        "La solicitud fue cancelada.",
+                        "AbortError"
+                    );
+                }
+
+                const isTimeout = error?.name === "AbortError";
+
+                const isNetworkError = !error?.status && !isTimeout;
+
+                const isRetryable = isTimeout || isNetworkError || this.isRetryableStatus(error?.status);
+
+                if (!isRetryable) {
+
+                    throw error;
+                }
+
+                lastError = error;
+
+                if ( attempt < this.MAX_RETRIES) {
+
+                    onRetry?.({
+                        attempt: attempt + 1,
+                        maxRetries: this.MAX_RETRIES,
+                        error
+                    });
+
+                    console.warn(
+                        "Error al consultar Open Food Facts. " +
+                        `Reintento ${attempt + 1}/` +
+                        `${this.MAX_RETRIES}.`,
+                        error
+                    );
+                    continue;
+                }
+
+                break;
             }
         }
 
-        const error = new Error(
-            lastError?.status === 429
-                ? "El servicio recibió demasiadas consultas. Esperá un momento y volvé a buscar."
-                : "El servicio está tardando demasiado o no está disponible. Volvé a intentar en unos instantes.",
-            { cause: lastError }
-        );
-        error.status = lastError?.status;
-        throw error;
-    }
-
-
-    // =========================================================
-    // DETERMINAR SI EL STATUS HTTP ES REINTENTABLE
-    // =========================================================
-
-    static isRetryableStatus(
-        status
-    ) {
-
-        return (
-
-            status === 408 ||
-            status === 425 ||
-            status === 429 ||
-            status === 500 ||
-            status === 502 ||
-            status === 503 ||
-            status === 504
-
-        );
-
-    }
-
-
-    // =========================================================
-    // PARSEAR JSON
-    // =========================================================
-
-    static async parseJson(
-        response
-    ) {
-
-        try {
-
-            return await response.json();
-
-        } catch (error) {
-
-            throw new Error(
-                "La API devolvió una respuesta que no es JSON válida."
+        const finalError =
+            new Error("No se pudo obtener información de " +
+                "Open Food Facts. Intentá nuevamente."
             );
 
+        if (
+            lastError?.status
+        ) {
+
+            finalError.status = lastError.status;
         }
 
+        finalError.cause = lastError;
+
+        throw finalError;
     }
 
+    /*
+     * =========================================================
+     * ESTADOS HTTP REINTENTABLES
+     * =========================================================
+     */
 
-    // =========================================================
-    // INTENTAR PARSEAR JSON
-    // =========================================================
+    static isRetryableStatus(status) {
 
-    static async tryParseJson(
-        response
-    ) {
+        return [ 408, 425, 429, 500, 502, 503, 504].includes(status);
+    }
 
-        try {
+    /*
+     * =========================================================
+     * CONVERTIR RETRY-AFTER A MILISEGUNDOS
+     * =========================================================
+     */
 
-            return await response.json();
+    static getRetryAfterMilliseconds(retryAfter) {
 
-        } catch (error) {
+        const numericValue =Number(retryAfter);
 
-            return null;
+        if (Number.isFinite(numericValue)) {
 
+            return Math.max(0, numericValue * 1000);
         }
 
+        const retryDate = Date.parse(retryAfter);
+
+        if (Number.isFinite(retryDate)) {
+
+            return Math.max(0, retryDate - Date.now());
+        }
+        return 0;
     }
-
-
-    // =========================================================
-    // ESPERA
-    // =========================================================
 
     static sleep(milliseconds, signal) {
+
+        if (signal?.aborted) {
+
+            return Promise.reject(
+                new DOMException(
+                    "La solicitud fue cancelada.",
+                    "AbortError"
+                )
+            );
+        }
+
         return new Promise((resolve, reject) => {
-            signal?.throwIfAborted();
-            const cancel = () => {
-                clearTimeout(timer);
-                reject(signal.reason);
-            };
-            const timer = setTimeout(() => {
-                signal?.removeEventListener("abort", cancel);
-                resolve();
-            }, milliseconds);
-            signal?.addEventListener("abort", cancel, { once: true });
-        });
+
+                let timeoutId;
+
+                const abortHandler = () => {
+
+                        clearTimeout(timeoutId);
+
+                        signal?.removeEventListener("abort", abortHandler);
+
+                        reject(
+                            new DOMException(
+                                "La solicitud fue cancelada.",
+                                "AbortError"
+                            )
+                        );
+                    };
+
+                timeoutId =
+                    setTimeout(
+                        () => {
+
+                            signal?.removeEventListener(
+                                "abort",
+                                abortHandler
+                            );
+                            resolve();
+                        },
+                        milliseconds
+                    );
+
+                signal?.addEventListener("abort", abortHandler,
+                    {
+                        once: true
+                    }
+                );
+            }
+        );
     }
 
 }

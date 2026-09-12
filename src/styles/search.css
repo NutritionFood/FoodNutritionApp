@@ -854,6 +854,7 @@
 .results-section {
 
     margin-top: 28px;
+    
 
 }
 
@@ -867,7 +868,7 @@
     gap: 12px;
 
     margin-bottom: 20px;
-
+    justify-content: center;
 }
 
 
@@ -1306,7 +1307,7 @@
         var(--color-accent-strong);
 
     border-radius: 50%;
-
+    
     animation:
         loading-spin 0.8s linear infinite;
 
