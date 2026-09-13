@@ -2,11 +2,9 @@ import { API } from "../config/urls.js";
 
 export class FoodNutritionService {
 
-    // 3 reintentos + 1 intento inicial 
-    static MAX_RETRIES = 3;
-
-    // Espera corta entre solicitudes
-    static RETRY_DELAY_MS = 400;
+    // Espera progresiva para no saturar la API durante una falla prolongada.
+    static RETRY_DELAY_MS = 1000;
+    static MAX_RETRY_DELAY_MS = 30000;
 
     // Tiempo máximo permitido para cada solicitud individual
     static REQUEST_TIMEOUT_MS = 5000;
@@ -172,171 +170,58 @@ export class FoodNutritionService {
      * =========================================================
      */
 
-    static async requestWithRetry(url,{signal, onRetry} = {}
-    ) {
+    static async requestWithRetry(url, { signal, onRetry } = {}) {
+        let attempt = 0;
 
-        let lastError = null;
-    
-        for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
-
-            /*
-             * Si el controller canceló la consulta,
-             * no continuamos con los reintentos.
-             */
-            if ( signal?.aborted) {
-
-                throw new DOMException(
-                    "La solicitud fue cancelada.",
-                    "AbortError"
-                );
-            }
-
-            if ( attempt > 0) {
-
-                await this.sleep(this.RETRY_DELAY_MS, signal);
+        while (true) {
+            if (signal?.aborted) {
+                throw new DOMException("La solicitud fue cancelada.", "AbortError");
             }
 
             const controller = new AbortController();
-
-            const timeoutId = setTimeout(() => {
-
-                        controller.abort();
-                    },
-                    this.REQUEST_TIMEOUT_MS
-                );
-
-            const abortHandler =() => {
-
-                    controller.abort();
-                };
-
-            signal?.addEventListener("abort", abortHandler,{once: true});
+            const timeoutId = setTimeout(() => controller.abort(), this.REQUEST_TIMEOUT_MS);
+            const abortHandler = () => controller.abort();
+            signal?.addEventListener("abort", abortHandler, { once: true });
 
             try {
-
-                const response = await fetch(url,
-                        {
-                            method: "GET",
-                            headers: {
-                                Accept: "application/json"
-                            },
-                            signal: controller.signal
-                        }
-                    );
-
-                /*
-                 * La solicitud terminó.
-                 * Eliminamos el timeout.
-                 */
-                clearTimeout(timeoutId);
-
-                signal?.removeEventListener("abort", abortHandler);
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: { Accept: "application/json" },
+                    signal: controller.signal
+                });
 
                 if (response.ok) {
-
                     return await response.json();
                 }
 
-                const error =new Error(`Error HTTP ${response.status}`);
-
+                const error = new Error(`Error HTTP ${response.status}`);
                 error.status = response.status;
-
                 const retryAfter = response.headers.get("Retry-After");
-
-                if ( retryAfter) {
-
-                    error.retryAfter =this.getRetryAfterMilliseconds(retryAfter);
+                if (retryAfter) {
+                    error.retryAfter = this.getRetryAfterMilliseconds(retryAfter);
                 }
-
-                if ( !this.isRetryableStatus(response.status)) {
-
-                    throw error;
-                }
-
-                lastError = error;
-
-                if (attempt < this.MAX_RETRIES) {
-
-                    onRetry?.({
-                        attempt: attempt + 1,
-                        maxRetries: this.MAX_RETRIES,
-                        error
-                    });
-
-                    console.warn(
-                        "Open Food Facts respondió " +
-                        `${response.status}. ` +
-                        `Reintento ${attempt + 1}/` +
-                        `${this.MAX_RETRIES}.`
-                    );
-                    continue;
-                }
-
                 throw error;
-
             } catch (error) {
-
-                clearTimeout(timeoutId);
-
-                signal?.removeEventListener("abort", abortHandler);
-
                 if (signal?.aborted) {
-
-                    throw new DOMException(
-                        "La solicitud fue cancelada.",
-                        "AbortError"
-                    );
+                    throw new DOMException("La solicitud fue cancelada.", "AbortError");
                 }
-
-                const isTimeout = error?.name === "AbortError";
-
-                const isNetworkError = !error?.status && !isTimeout;
-
-                const isRetryable = isTimeout || isNetworkError || this.isRetryableStatus(error?.status);
-
-                if (!isRetryable) {
-
+                if (error?.status && !this.isRetryableStatus(error.status)) {
                     throw error;
                 }
 
-                lastError = error;
-
-                if ( attempt < this.MAX_RETRIES) {
-
-                    onRetry?.({
-                        attempt: attempt + 1,
-                        maxRetries: this.MAX_RETRIES,
-                        error
-                    });
-
-                    console.warn(
-                        "Error al consultar Open Food Facts. " +
-                        `Reintento ${attempt + 1}/` +
-                        `${this.MAX_RETRIES}.`,
-                        error
-                    );
-                    continue;
-                }
-
-                break;
+                attempt++;
+                const delay = Math.max(
+                    Math.min(this.RETRY_DELAY_MS * 2 ** Math.min(attempt - 1, 10), this.MAX_RETRY_DELAY_MS),
+                    error?.retryAfter ?? 0
+                );
+                onRetry?.({ attempt, error, delay });
+                console.warn(`Error al consultar Open Food Facts. Reintento ${attempt}.`, error);
+                await this.sleep(delay, signal);
+            } finally {
+                clearTimeout(timeoutId);
+                signal?.removeEventListener("abort", abortHandler);
             }
         }
-
-        const finalError =
-            new Error("No se pudo obtener información de " +
-                "Open Food Facts. Intentá nuevamente."
-            );
-
-        if (
-            lastError?.status
-        ) {
-
-            finalError.status = lastError.status;
-        }
-
-        finalError.cause = lastError;
-
-        throw finalError;
     }
 
     /*
@@ -344,7 +229,6 @@ export class FoodNutritionService {
      * ESTADOS HTTP REINTENTABLES
      * =========================================================
      */
-
     static isRetryableStatus(status) {
 
         return [ 408, 425, 429, 500, 502, 503, 504].includes(status);

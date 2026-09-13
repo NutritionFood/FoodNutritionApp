@@ -10,6 +10,9 @@ import { SearchComponent }
 // =========================================================
 
 const FEATURED_PRODUCTS_COUNT = 3;
+const FEATURED_POOL_SIZE = 12;
+const FEATURED_PAGE_SIZE = 24;
+const MAX_FEATURED_PAGES = 5;
 
 
 // =========================================================
@@ -58,6 +61,8 @@ function initializeHome() {
     // CARGAR PRODUCTOS DESTACADOS
     // =========================================================
 
+    const request = new AbortController();
+    document.addEventListener("astro:before-swap", () => request.abort(), { once: true });
     loadFeaturedProducts();
 
 
@@ -77,19 +82,52 @@ function initializeHome() {
 
 
             // -------------------------------------------------
-            // OBTENER PRODUCTOS DE ARGENTINA
+            // OBTENER PRODUCTOS DE ARGENTINA CON NUTRI-SCORE A
             // -------------------------------------------------
 
-            const data =
-                await FoodNutritionService.searchProducts(
+            const candidates = [];
+            const seenCodes = new Set();
+
+            for (let page = 1; page <= MAX_FEATURED_PAGES; page++) {
+                const data = await FoodNutritionService.searchProducts(
                     "",
                     "",
-                    "",
-                    1,
-                    FEATURED_PRODUCTS_COUNT
+                    "a",
+                    page,
+                    FEATURED_PAGE_SIZE,
+                    {
+                        signal: request.signal,
+                        onRetry: () => {
+                            if (featuredStatus && !request.signal.aborted) {
+                                featuredStatus.textContent = "La conexión está tardando. Seguimos buscando productos...";
+                            }
+                        }
+                    }
                 );
 
-            const products = data.products;
+                if (request.signal.aborted) return;
+
+                for (const product of data.products) {
+                    const grade = product?.nutriscore_grade || product?.nutrition_grades;
+                    if (String(grade ?? "").trim().toLowerCase() !== "a") continue;
+                    if (!product.code || seenCodes.has(product.code)) continue;
+                    seenCodes.add(product.code);
+                    candidates.push(product);
+                }
+
+                if (
+                    candidates.length >= FEATURED_POOL_SIZE ||
+                    data.products.length === 0 ||
+                    page * FEATURED_PAGE_SIZE >= data.count
+                ) break;
+            }
+
+            for (let i = candidates.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+            }
+
+            const products = candidates.slice(0, FEATURED_PRODUCTS_COUNT);
 
 
             // -------------------------------------------------
@@ -113,6 +151,7 @@ function initializeHome() {
 
 
         } catch (error) {
+            if (request.signal.aborted) return;
 
             console.error(
                 "Error al cargar productos destacados:",
