@@ -6,9 +6,6 @@ export class FoodNutritionService {
     static RETRY_DELAY_MS = 1000;
     static MAX_RETRY_DELAY_MS = 30000;
 
-    // Tiempo máximo permitido para cada solicitud individual
-    static REQUEST_TIMEOUT_MS = 5000;
-
     static SEARCH_FIELDS = [
         "code",
         "product_name",
@@ -44,19 +41,22 @@ export class FoodNutritionService {
         "serving_quantity",
         "serving_quantity_unit"
     ].join(",");
+
     /*
      * =========================================================
      * OBTENER PRODUCTO POR CÓDIGO DE BARRAS
      * =========================================================
      */
-    static async getProductByBarcode(barcode,options = {}) {
+    static async getProductByBarcode(barcode, options = {}) {
 
         const normalizedBarcode =
             String(barcode ?? "").trim();
 
         if (!/^\d{8,14}$/.test(normalizedBarcode)) {
 
-            throw new Error("El código de barras debe contener entre 8 y 14 números.");
+            throw new Error(
+                "El código de barras debe contener entre 8 y 14 números."
+            );
         }
 
         const url =
@@ -66,30 +66,35 @@ export class FoodNutritionService {
 
         try {
 
-            const data = await this.requestWithRetry(url, options);
+            const data =
+                await this.requestWithRetry(url, options);
+
             /*
              * Puede devolver HTTP 200
              * pero indicar que el producto no existe
              */
             if (data?.status !== 1 || !data?.product) {
 
-                throw new Error("No se encontró un producto asociado a ese código de barras.");
+                throw new Error(
+                    "No se encontró un producto asociado a ese código de barras."
+                );
             }
 
             return data.product;
 
         } catch (error) {
 
-            if (
-                error?.status === 404
-            ) {
+            if (error?.status === 404) {
 
-                throw new Error("No se encontró un producto asociado a ese código de barras.");
+                throw new Error(
+                    "No se encontró un producto asociado a ese código de barras."
+                );
             }
 
             throw error;
         }
     }
+
     /*
      * =========================================================
      * OBTENER PRODUCTO POR FILTROS
@@ -109,27 +114,40 @@ export class FoodNutritionService {
         /*
          * País de búsqueda
          */
-        params.set("countries_tags_en", "argentina");
+        params.set(
+            "countries_tags_en",
+            "argentina"
+        );
 
         /*
          * Filtro por categoría
          */
         if (category) {
 
-            params.set("categories_tags_en", category);
+            params.set(
+                "categories_tags_en",
+                category
+            );
         }
 
         /*
          * Filtro por marca
          */
         if (brand) {
-            // La API filtra por la etiqueta normalizada, no por el texto visible.
-            const brandTag = brand.trim()
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .toLowerCase()
-                .replace(/\s+/g, "-");
-            params.set("brands_tags", brandTag);
+
+            // La API filtra por la etiqueta normalizada,
+            // no por el texto visible.
+            const brandTag =
+                brand.trim()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .toLowerCase()
+                    .replace(/\s+/g, "-");
+
+            params.set(
+                "brands_tags",
+                brandTag
+            );
         }
 
         /*
@@ -137,35 +155,53 @@ export class FoodNutritionService {
          */
         if (nutritionGrade) {
 
-            params.set("nutrition_grades_tags", nutritionGrade);
+            params.set(
+                "nutrition_grades_tags",
+                nutritionGrade
+            );
         }
 
         /*
          * Campos solicitados
          */
-        params.set("fields", this.SEARCH_FIELDS);
+        params.set(
+            "fields",
+            this.SEARCH_FIELDS
+        );
 
         /*
          * Paginación
          */
-        params.set("page", page);
+        params.set(
+            "page",
+            page
+        );
 
-        params.set("page_size", pageSize);
+        params.set(
+            "page_size",
+            pageSize
+        );
 
-        const url =`${API.OPEN_FOOD_FACTS}/search?${params.toString()}`;
+        const url =
+            `${API.OPEN_FOOD_FACTS}/search?${params.toString()}`;
 
-        const data =await this.requestWithRetry(url, options);
+        const data =
+            await this.requestWithRetry(
+                url,
+                options
+            );
 
         /*
          * Validación de la respuesta
          */
-        if (!Array.isArray( data?.products)
-        ) {
+        if (!Array.isArray(data?.products)) {
+
             throw new Error(
                 "La respuesta de Open Food Facts " +
                 "no contiene una lista válida de productos."
             );
         }
+
         return data;
     }
 
@@ -174,57 +210,167 @@ export class FoodNutritionService {
      * REQUEST CON REINTENTOS
      * =========================================================
      */
+    static async requestWithRetry(
+        url,
+        { signal, onRetry } = {}
+    ) {
 
-    static async requestWithRetry(url, { signal, onRetry } = {}) {
         let attempt = 0;
 
         while (true) {
+
+            /*
+             * Permite cancelar una solicitud/reintento
+             * desde el controlador.
+             */
             if (signal?.aborted) {
-                throw new DOMException("La solicitud fue cancelada.", "AbortError");
+
+                throw new DOMException(
+                    "La solicitud fue cancelada.",
+                    "AbortError"
+                );
             }
 
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), this.REQUEST_TIMEOUT_MS);
-            const abortHandler = () => controller.abort();
-            signal?.addEventListener("abort", abortHandler, { once: true });
-
             try {
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: { Accept: "application/json" },
-                    signal: controller.signal
-                });
 
+                /*
+                 * No existe timeout.
+                 *
+                 * La solicitud puede permanecer esperando
+                 * indefinidamente hasta recibir una respuesta,
+                 * salvo que el AbortSignal sea cancelado.
+                 */
+                const response =
+                    await fetch(url, {
+                        method: "GET",
+                        headers: {
+                            Accept: "application/json"
+                        },
+                        signal
+                    });
+
+                /*
+                 * Respuesta correcta
+                 */
                 if (response.ok) {
+
                     return await response.json();
                 }
 
-                const error = new Error(`Error HTTP ${response.status}`);
-                error.status = response.status;
-                const retryAfter = response.headers.get("Retry-After");
+                /*
+                 * Error HTTP
+                 */
+                const error =
+                    new Error(
+                        `Error HTTP ${response.status}`
+                    );
+
+                error.status =
+                    response.status;
+
+                /*
+                 * Respetar Retry-After cuando la API lo envía.
+                 */
+                const retryAfter =
+                    response.headers.get("Retry-After");
+
                 if (retryAfter) {
-                    error.retryAfter = this.getRetryAfterMilliseconds(retryAfter);
+
+                    error.retryAfter =
+                        this.getRetryAfterMilliseconds(
+                            retryAfter
+                        );
                 }
+
                 throw error;
+
             } catch (error) {
+
+                /*
+                 * Si el usuario/controlador canceló
+                 * la solicitud, no reintentamos.
+                 */
                 if (signal?.aborted) {
-                    throw new DOMException("La solicitud fue cancelada.", "AbortError");
+
+                    throw new DOMException(
+                        "La solicitud fue cancelada.",
+                        "AbortError"
+                    );
                 }
-                if (error?.status && !this.isRetryableStatus(error.status)) {
+
+                /*
+                 * Los errores HTTP que no sean reintentables
+                 * se propagan inmediatamente.
+                 */
+                if (
+                    error?.status &&
+                    !this.isRetryableStatus(
+                        error.status
+                    )
+                ) {
+
                     throw error;
                 }
 
+                /*
+                 * Incrementar contador de intentos.
+                 */
                 attempt++;
-                const delay = Math.max(
-                    Math.min(this.RETRY_DELAY_MS * 2 ** Math.min(attempt - 1, 10), this.MAX_RETRY_DELAY_MS),
-                    error?.retryAfter ?? 0
+
+                /*
+                 * Backoff progresivo:
+                 *
+                 * 1s
+                 * 2s
+                 * 4s
+                 * 8s
+                 * 16s
+                 * 30s
+                 * 30s
+                 * ...
+                 *
+                 * Nunca supera MAX_RETRY_DELAY_MS.
+                 */
+                const delay =
+                    Math.max(
+                        Math.min(
+                            this.RETRY_DELAY_MS *
+                            2 **
+                            Math.min(
+                                attempt - 1,
+                                10
+                            ),
+                            this.MAX_RETRY_DELAY_MS
+                        ),
+                        error?.retryAfter ?? 0
+                    );
+
+                /*
+                 * Avisar al controlador que hubo
+                 * un nuevo intento.
+                 */
+                onRetry?.({
+                    attempt,
+                    error,
+                    delay
+                });
+
+                console.warn(
+                    `Error al consultar Open Food Facts. ` +
+                    `Reintento ${attempt}.`,
+                    error
                 );
-                onRetry?.({ attempt, error, delay });
-                console.warn(`Error al consultar Open Food Facts. Reintento ${attempt}.`, error);
-                await this.sleep(delay, signal);
-            } finally {
-                clearTimeout(timeoutId);
-                signal?.removeEventListener("abort", abortHandler);
+
+                /*
+                 * Esperar antes del siguiente intento.
+                 *
+                 * Este sleep también puede cancelarse
+                 * mediante AbortSignal.
+                 */
+                await this.sleep(
+                    delay,
+                    signal
+                );
             }
         }
     }
@@ -236,7 +382,15 @@ export class FoodNutritionService {
      */
     static isRetryableStatus(status) {
 
-        return [ 408, 425, 429, 500, 502, 503, 504].includes(status);
+        return [
+            408,
+            425,
+            429,
+            500,
+            502,
+            503,
+            504
+        ].includes(status);
     }
 
     /*
@@ -244,27 +398,55 @@ export class FoodNutritionService {
      * CONVERTIR RETRY-AFTER A MILISEGUNDOS
      * =========================================================
      */
+    static getRetryAfterMilliseconds(
+        retryAfter
+    ) {
 
-    static getRetryAfterMilliseconds(retryAfter) {
+        const numericValue =
+            Number(retryAfter);
 
-        const numericValue =Number(retryAfter);
-
+        /*
+         * Retry-After expresado en segundos.
+         */
         if (Number.isFinite(numericValue)) {
 
-            return Math.max(0, numericValue * 1000);
+            return Math.max(
+                0,
+                numericValue * 1000
+            );
         }
 
-        const retryDate = Date.parse(retryAfter);
+        /*
+         * Retry-After expresado como fecha HTTP.
+         */
+        const retryDate =
+            Date.parse(retryAfter);
 
         if (Number.isFinite(retryDate)) {
 
-            return Math.max(0, retryDate - Date.now());
+            return Math.max(
+                0,
+                retryDate - Date.now()
+            );
         }
+
         return 0;
     }
 
-    static sleep(milliseconds, signal) {
+    /*
+     * =========================================================
+     * ESPERA CANCELABLE
+     * =========================================================
+     */
+    static sleep(
+        milliseconds,
+        signal
+    ) {
 
+        /*
+         * Si ya fue cancelada antes de comenzar
+         * la espera, rechazamos inmediatamente.
+         */
         if (signal?.aborted) {
 
             return Promise.reject(
@@ -275,15 +457,22 @@ export class FoodNutritionService {
             );
         }
 
-        return new Promise((resolve, reject) => {
+        return new Promise(
+            (resolve, reject) => {
 
                 let timeoutId;
 
-                const abortHandler = () => {
+                const abortHandler =
+                    () => {
 
-                        clearTimeout(timeoutId);
+                        clearTimeout(
+                            timeoutId
+                        );
 
-                        signal?.removeEventListener("abort", abortHandler);
+                        signal?.removeEventListener(
+                            "abort",
+                            abortHandler
+                        );
 
                         reject(
                             new DOMException(
@@ -301,12 +490,15 @@ export class FoodNutritionService {
                                 "abort",
                                 abortHandler
                             );
+
                             resolve();
                         },
                         milliseconds
                     );
 
-                signal?.addEventListener("abort", abortHandler,
+                signal?.addEventListener(
+                    "abort",
+                    abortHandler,
                     {
                         once: true
                     }
