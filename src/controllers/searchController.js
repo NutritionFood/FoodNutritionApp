@@ -851,7 +851,12 @@ function initializeSearch() {
                     state.page,
                     state.pageSize,
                     {
-                        signal: request.signal
+                        signal: request.signal,
+                        onRetry: () => {
+                            if (!request.signal.aborted && activeSearch === request) {
+                                showStatus("La conexión está tardando. Seguimos buscando productos...", "info");
+                            }
+                        }
                     }
                 );
 

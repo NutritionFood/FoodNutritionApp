@@ -1,4 +1,5 @@
-const CACHE_NAME = 'food-nutrition-v1';
+const CACHE_NAME = 'food-nutrition-v2';
+const IS_LOCAL = ['localhost', '127.0.0.1'].includes(self.location.hostname);
 
 const SHELL = [
   '/',
@@ -16,6 +17,10 @@ const SHELL = [
 ];
 
 self.addEventListener('install', event => {
+  if (IS_LOCAL) {
+    event.waitUntil(self.skipWaiting());
+    return;
+  }
   console.log('[SW] Instalando Service Worker...');
 
   event.waitUntil(
@@ -29,6 +34,17 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
+  if (IS_LOCAL) {
+    event.waitUntil((async () => {
+      const names = await caches.keys();
+      await Promise.all(names.filter(name => name.startsWith('food-nutrition-'))
+        .map(name => caches.delete(name)));
+      await self.registration.unregister();
+      const clients = await self.clients.matchAll({ type: 'window' });
+      await Promise.all(clients.map(client => client.navigate(client.url)));
+    })());
+    return;
+  }
   console.log('[SW] Activando Service Worker...');
 
   event.waitUntil(
@@ -45,26 +61,18 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+  if (IS_LOCAL) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
   const url = new URL(event.request.url);
 
   if (
     event.request.url.includes('/api/') ||
     !url.origin.includes(self.location.origin)
   ) {
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        return new Response(
-          JSON.stringify({
-            error: 'Sin conexión. Los datos no están disponibles offline.'
-          }),
-          {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        );
-      })
-    );
+    // Dejar que la falla de red llegue al servicio para que pueda reintentar.
+    event.respondWith(fetch(event.request));
 
     return;
   }

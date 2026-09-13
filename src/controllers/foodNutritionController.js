@@ -203,7 +203,12 @@ function initializeFoodNutrition() {
             // -------------------------------------------------
 
             const product = await FoodNutritionService.getProductByBarcode(productBarcode, {
-                signal: request.signal
+                signal: request.signal,
+                onRetry: () => {
+                    if (!request.signal.aborted) {
+                        renderLoading("La conexión está tardando. Seguimos buscando el producto...");
+                    }
+                }
             });
             if (request.signal.aborted) return;
 
