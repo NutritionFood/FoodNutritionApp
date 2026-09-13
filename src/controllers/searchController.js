@@ -643,19 +643,19 @@ function initializeSearch() {
 
     function stopCamera() {
 
-    clearCameraHelpTimer();
+        clearCameraHelpTimer();
 
-    barcodeScanner.stop();
+        barcodeScanner.stop();
 
-    scanBarcodeButton.disabled = false;
+        scanBarcodeButton.disabled = false;
 
-    scanBarcodeButton.textContent =
-        "Escanear cámara";
+        scanBarcodeButton.textContent =
+            "Escanear cámara";
 
-    stopCameraButton.hidden = true;
+        stopCameraButton.hidden = true;
 
-    cameraContainer.hidden = true;
-}
+        cameraContainer.hidden = true;
+    }
 
 
     /*
@@ -692,9 +692,9 @@ function initializeSearch() {
 
         if (
             error?.name ===
-                "NotAllowedError" ||
+            "NotAllowedError" ||
             error?.name ===
-                "PermissionDeniedError"
+            "PermissionDeniedError"
         ) {
 
             return (
@@ -706,9 +706,9 @@ function initializeSearch() {
 
         if (
             error?.name ===
-                "NotFoundError" ||
+            "NotFoundError" ||
             error?.name ===
-                "DevicesNotFoundError"
+            "DevicesNotFoundError"
         ) {
 
             return (
@@ -719,9 +719,9 @@ function initializeSearch() {
 
         if (
             error?.name ===
-                "NotReadableError" ||
+            "NotReadableError" ||
             error?.name ===
-                "TrackStartError"
+            "TrackStartError"
         ) {
 
             return (
@@ -733,7 +733,7 @@ function initializeSearch() {
 
         if (
             error?.name ===
-                "OverconstrainedError"
+            "OverconstrainedError"
         ) {
 
             return (
@@ -1113,79 +1113,79 @@ function initializeSearch() {
         pagination.innerHTML =
             "";
     }
-/*
- * ==========================================
- * RESTAURAR ESTADO BASE AL VOLVER
- * ==========================================
- *
- * Cuando volvemos desde la vista de detalle
- * mediante history.back(), el navegador puede
- * restaurar la página exactamente como estaba.
- *
- * Por eso dejamos la búsqueda nuevamente
- * en su estado inicial:
- *
- * - Código manual seleccionado
- * - Cámara cerrada
- * - Scanner detenido
- * - Sin estados de error/ayuda
- * - Botón "Iniciar cámara"
- */
+    /*
+     * ==========================================
+     * RESTAURAR ESTADO BASE AL VOLVER
+     * ==========================================
+     *
+     * Cuando volvemos desde la vista de detalle
+     * mediante history.back(), el navegador puede
+     * restaurar la página exactamente como estaba.
+     *
+     * Por eso dejamos la búsqueda nuevamente
+     * en su estado inicial:
+     *
+     * - Código manual seleccionado
+     * - Cámara cerrada
+     * - Scanner detenido
+     * - Sin estados de error/ayuda
+     * - Botón "Iniciar cámara"
+     */
 
-window.addEventListener(
-    "pageshow",
-    () => {
+    window.addEventListener(
+        "pageshow",
+        () => {
 
-        /*
-         * Detener cualquier scanner que haya
-         * quedado activo.
-         */
-        stopCamera();
-
-
-        /*
-         * Limpiar estados visuales de la cámara.
-         */
-        clearStatus();
-
-        hideManualFallbackHighlight();
+            /*
+             * Detener cualquier scanner que haya
+             * quedado activo.
+             */
+            stopCamera();
 
 
-        /*
-         * Seleccionar nuevamente
-         * "Código manual".
-         */
-        barcodeMethodInputs.forEach(
-            input => {
+            /*
+             * Limpiar estados visuales de la cámara.
+             */
+            clearStatus();
 
-                input.checked =
-                    input.value === "manual";
-            }
-        );
+            hideManualFallbackHighlight();
 
 
-        /*
-         * Mostrar formulario manual.
-         */
-        barcodeForm.hidden =
-            false;
+            /*
+             * Seleccionar nuevamente
+             * "Código manual".
+             */
+            barcodeMethodInputs.forEach(
+                input => {
+
+                    input.checked =
+                        input.value === "manual";
+                }
+            );
 
 
-        /*
-         * Ocultar sección de cámara.
-         */
-        cameraSearch.hidden =
-            true;
+            /*
+             * Mostrar formulario manual.
+             */
+            barcodeForm.hidden =
+                false;
 
 
-        /*
-         * Restaurar completamente
-         * la interfaz de cámara.
-         */
-        resetCameraInterface();
+            /*
+             * Ocultar sección de cámara.
+             */
+            cameraSearch.hidden =
+                true;
 
-    }
-);
+
+            /*
+             * Restaurar completamente
+             * la interfaz de cámara.
+             */
+            resetCameraInterface();
+
+        }
+    );
 
     /*
      * ==========================================
