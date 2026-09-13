@@ -123,8 +123,13 @@ export class FoodNutritionService {
          * Filtro por marca
          */
         if (brand) {
-
-            params.set("brands_tags", brand);
+            // La API filtra por la etiqueta normalizada, no por el texto visible.
+            const brandTag = brand.trim()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .replace(/\s+/g, "-");
+            params.set("brands_tags", brandTag);
         }
 
         /*
